@@ -1,0 +1,9 @@
+.demo_cache/
+__pycache__/
+voice_profiles/
+.venv/
+engines/
+models/
+app_settings.json
+*.pyc
+演示截图.png

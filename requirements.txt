@@ -1,0 +1,13 @@
+PySide6>=6.8
+Pillow>=11
+pywin32>=308
+numpy>=2.0
+rapidocr==3.10.0
+onnxruntime==1.31.0
+PyAudioWPatch==0.2.12.9
+faster-whisper==1.2.1
+av<17
+imageio-ffmpeg==0.6.0
+uv>=0.13
+PyYAML>=6
+requests>=2.32
