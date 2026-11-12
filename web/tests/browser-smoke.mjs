@@ -33,7 +33,8 @@ try{
  console.log("ADVANCE",JSON.stringify({initial,next:await evaluate('document.querySelector(".line-number")?.textContent'),cg:await evaluate('Boolean(document.querySelector(".cg"))')}));
  await screenshot("desktop-cg");
  await evaluate('document.querySelector(".listen-toggle").click()');
- const other=await send("Target.createTarget",{url:"about:blank"});await pause(12000);
+ const other=await send("Target.createTarget",{url:"about:blank"});
+ for(let i=0;i<60;i++){await pause(500);if(await evaluate('parseInt(document.querySelector(".line-number")?.textContent)>3 && navigator.mediaSession.playbackState==="playing"'))break;}
  const background=await evaluate('({hidden:document.visibilityState,line:document.querySelector(".line-number")?.textContent,status:document.querySelector(".listen-badge")?.textContent,media:navigator.mediaSession?.playbackState,hint:document.querySelector(".click-hint")?.textContent})');
  console.log("BACKGROUND_LISTEN",JSON.stringify(background));assert.equal(background.hidden,"hidden");assert.ok(parseInt(background.line)>3,"Background playback must advance to next line");assert.equal(background.media,"playing");
  await send("Target.closeTarget",{targetId:other.targetId});await pause(200);

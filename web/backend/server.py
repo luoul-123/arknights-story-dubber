@@ -28,6 +28,10 @@ ENDPOINT = os.environ.get("GPT_SOVITS_URL", "http://127.0.0.1:9882").rstrip("/")
 STORE = DATA / "characters.json"
 from story_source import StorySource
 STORIES = StorySource(DATA / "stories")
+from catalog_metadata import CatalogMetadata
+CATALOG_METADATA = CatalogMetadata(DATA)
+from default_voices import read_defaults, save_defaults, defaults_version, selected_default
+import reader_voice
 
 def read_store():
     if not STORE.exists(): return {}
@@ -198,6 +202,13 @@ def publish(ident, mode="reference"):
 
 def default_speech(text, kind, speaker=""):
     global NARRATION
+    with LOCK:
+        config=read_defaults(DATA);store=read_store()
+        selected=selected_default(config,speaker,narrator=kind=="__narrator",known=CATALOG_METADATA.get().get("genders",{})) if any(config.values()) else None
+        profile=store.get(selected,{})
+    if selected:
+        if not profile.get("published"):raise ValueError("站点默认音色尚未发布，请联系管理员")
+        return synthesize(selected,text,profile["published"]["version"])
     if os.name != "nt":raise RuntimeError("请由站点管理员配置服务器旁白引擎")
     speaker=str(speaker)[:100]
     digest=hashlib.sha256(json.dumps([text,kind,speaker],ensure_ascii=False).encode()).hexdigest()
@@ -213,13 +224,22 @@ def default_speech(text, kind, speaker=""):
         return target.read_bytes()
 
 def fallback_voices():
-    return [{"id":"__narrator","speaker":"旁白","version":"system-v1","kind":"narrator"},{"id":"__npc","speaker":"通用角色","version":"system-v1","kind":"fallback"}] if os.name=="nt" else []
+    with LOCK:
+        config=read_defaults(DATA);store=read_store()
+    if os.name!="nt" and not any(config.values()):return []
+    version=defaults_version(config,store)
+    narrator_id=config.get("narrator") or config.get("female")
+    narrator_name=store.get(narrator_id,{}).get("speaker","系统旁白")
+    return [{"id":"__narrator","speaker":narrator_name,"version":version,"kind":"narrator"},{"id":"__npc","speaker":"默认男女声" if any(config.values()) else "通用角色","version":version,"kind":"fallback"}]
 
-def synthesize(ident, text, version=None, preview=False, mode="reference", speaker=""):
+def synthesize(ident, text, version=None, preview=False, mode="reference", speaker="", reader=""):
     global LOADED
     text = str(text).strip()
     if not text or len(text) > 600: raise ValueError("台词长度需要在 1–600 字之间")
     if ident in ("__narrator","__npc"):return default_speech(text,ident,speaker)
+    if ident=="__reader":
+        reference=reader_voice.reference_for(DATA,reader,version)
+        return render_reference("reader:"+hashlib.sha256(reader.encode()).hexdigest(),text,models_for({},"reference"),reference,version)
     with LOCK:
         c = copy.deepcopy(get_character(read_store(), ident))
     if preview:
@@ -230,6 +250,10 @@ def synthesize(ident, text, version=None, preview=False, mode="reference", speak
         if not published: raise ValueError("该角色尚未发布音色")
         if version != published["version"]: raise ValueError("音色已更新，请刷新后重试")
         models = published["models"]; reference = published["reference"]; identity = version
+    return render_reference(ident,text,models,reference,identity,c.get("language","zh"))
+
+def render_reference(ident,text,models,reference,identity,language="zh"):
+    global LOADED
     digest = hashlib.sha256(json.dumps([ident, identity, text, reference], sort_keys=True).encode()).hexdigest()
     target = DATA / "audio" / (digest+".wav")
     target.parent.mkdir(exist_ok=True)
@@ -241,7 +265,7 @@ def synthesize(ident, text, version=None, preview=False, mode="reference", speak
             engine_request("/set_gpt_weights", {"weights_path": models["gpt"]})
             engine_request("/set_sovits_weights", {"weights_path": models["sovits"]})
             LOADED = models
-        sound = engine_request("/tts", {"text": text, "text_lang": "zh", "ref_audio_path": reference["path"], "prompt_text": reference["text"], "prompt_lang": c.get("language","zh"), "text_split_method": "cut5", "media_type": "wav", "streaming_mode": False})
+        sound = engine_request("/tts", {"text": text, "text_lang": "zh", "ref_audio_path": reference["path"], "prompt_text": reference["text"], "prompt_lang": language, "text_split_method": "cut5", "media_type": "wav", "streaming_mode": False})
         if not (sound.startswith(b"RIFF") and sound[8:12] == b"WAVE"): raise RuntimeError("引擎没有返回有效音频")
         temporary = target.with_suffix(".tmp"); temporary.write_bytes(sound); temporary.replace(target)
         return sound
@@ -301,14 +325,20 @@ class Handler(BaseHTTPRequestHandler):
         if not TOKEN or not hmac.compare_digest(self.headers.get("Authorization",""), "Bearer "+TOKEN):
             self.reply({"error":"未授权"},401);return
         parsed=urlparse(self.path); path=parsed.path.strip("/"); query=parse_qs(parsed.query)
+        reader=self.headers.get("X-Reader-Id","")
         try:
             if self.command=="GET":
                 if path=="stories":
-                    return self.reply(STORIES.get(query.get("id",[None])[0]))
+                    ident=query.get("id",[None])[0];result=STORIES.get(ident)
+                    if ident is None:result["metadata"]=CATALOG_METADATA.get()
+                    return self.reply(result)
+                if path=="reader/voice":return self.reply(reader_voice.public_profile(DATA,reader))
                 if path=="voices":
                     with LOCK:
                         voices=[{"id":c["id"],"speaker":c["speaker"],"aliases":c.get("aliases",[]),"version":c["published"]["version"]} for c in read_store().values() if c.get("published")]
                     return self.reply({"voices":voices+fallback_voices()})
+                if path=="admin/defaults":
+                    with LOCK:return self.reply({"defaults":read_defaults(DATA)})
                 if path=="admin/characters":
                     with LOCK: return self.reply({"characters":[public_character(c) for c in read_store().values()]})
                 if path.startswith("admin/jobs/"):
@@ -318,9 +348,14 @@ class Handler(BaseHTTPRequestHandler):
             length=int(self.headers.get("Content-Length","0"))
             if length<0 or length>50*1024*1024:return self.reply({"error":"请求不能超过 50 MB"},413)
             body=self.rfile.read(length)
+            if path=="reader/upload":return self.reply(reader_voice.upload(DATA,reader,body))
             if path=="admin/upload":return self.reply(ingest(query.get("character",[""])[0],query.get("filename",["audio"])[0],body))
             if length>16384:return self.reply({"error":"请求过大"},413)
             data=json.loads(body or b"{}")
+            if path=="reader/voice":return self.reply(reader_voice.publish(DATA,reader,data.get("text","")))
+            if path=="admin/defaults":
+                with LOCK:defaults=save_defaults(DATA,read_store(),data)
+                return self.reply({"defaults":defaults})
             if path=="admin/characters":return self.reply(create_character(data.get("speaker","")))
             if path=="admin/import-operator":return self.reply(import_operator(data.get("name","")))
             if path=="admin/transcript":
@@ -335,7 +370,7 @@ class Handler(BaseHTTPRequestHandler):
             if path in ("admin/transcribe","admin/train"):return self.reply(queue_job(path.split("/")[1],data["id"],int(data.get("epochs",2))),202)
             if path=="admin/publish":return self.reply(publish(data["id"], data.get("mode","reference")))
             if path=="admin/preview":return self.reply(synthesize(data["id"],data.get("text",""),preview=True, mode=data.get("mode","reference")))
-            if path=="speech":return self.reply(synthesize(data["voiceId"],data.get("text",""),data.get("version"),speaker=data.get("speaker","")))
+            if path=="speech":return self.reply(synthesize(data["voiceId"],data.get("text",""),data.get("version"),speaker=data.get("speaker",""),reader=reader))
             return self.reply({"error":"接口不存在"},404)
         except (ValueError,KeyError,json.JSONDecodeError) as e:self.reply({"error":str(e)},400)
         except Exception as e:self.reply({"error":str(e)},500)
@@ -350,7 +385,7 @@ def main():
         save_store(data)
     parser=argparse.ArgumentParser();parser.add_argument("--host",default="127.0.0.1");parser.add_argument("--port",type=int,default=9881);args=parser.parse_args()
     server=ThreadingHTTPServer((args.host,args.port),Handler)
-    print(f"ZhouSheng GPU service listening on {args.host}:{args.port}",flush=True)
+    print(f"TerraVoice local service listening on {args.host}:{args.port}",flush=True)
     try:server.serve_forever()
     except KeyboardInterrupt:pass
     finally:

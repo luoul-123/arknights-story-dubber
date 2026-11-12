@@ -11,7 +11,7 @@
 1. 按 [README](README.md) 安装网页版及后端依赖。
 2. 在自己的分支中修改；用户入口和管理操作均在网页内，不再添加桌面 UI 或 OCR 依赖。
 3. 在 web 目录运行 node --test tests/core.test.mjs、..\.venv\Scripts\python.exe -m unittest discover -s backend -p "test_*.py"、npx tsc --noEmit 和 npm run build。
-4. 涉及播放流程时，启动本机服务后运行 node tests/browser-smoke.mjs；该检查使用 Windows Edge 并静音。
+4. 涉及播放流程时，启动本机服务后运行 node tests/browser-smoke.mjs；面板、目录或段落衔接改动同时运行 node tests/browser-navigation.mjs；录音室上传改动可运行 node tests/browser-reader-voice.mjs（需本机佩丽卡参考素材）。这些检查顺序执行，使用 Windows Edge 并静音。
 5. 提交时说明改动、验证方式及尚未验证的范围。
 
 不要提交 .venv/、engines/、models/、voice_profiles/、web/.voice-data/、web/work/、web/.dev.vars、环境密钥、录音或训练模型。日志和截图上传前应检查个人信息及本机路径。第三方剧情和素材不作为模型或代码附件分发。

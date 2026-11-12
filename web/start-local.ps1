@@ -36,5 +36,5 @@ for ($i=0; $i -lt 45; $i++) {
     Start-Sleep -Seconds 1
 }
 if (-not $ready) { throw '网页启动超时，请查看 web/work 中的日志。' }
-Write-Host '舟声网页版已启动：http://127.0.0.1:5173/'
+Write-Host '泰拉之声网页版已启动：http://127.0.0.1:5173/'
 if (-not $NoBrowser) { Start-Process 'http://127.0.0.1:5173/signin-with-chatgpt?return_to=/' }

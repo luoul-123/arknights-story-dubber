@@ -104,7 +104,7 @@ def check_engine(config=None):
 
 
 def training_clips(profile, minimum_seconds=30):
-    clips = [c for c in profile.get('clips', []) if c.get('text','').strip() and Path(c['path']).is_file() and not c.get('clipped')]
+    clips = [c for c in profile.get('clips', []) if c.get('text','').strip() and Path(c['path']).is_file() and not c.get('clipped') and not c.get('referenceOnly')]
     seconds = sum(c.get('duration',0) for c in clips)
     if seconds < minimum_seconds:
         raise ValueError(f'还差 {minimum_seconds-seconds:.1f} 秒有效语音：快速训练需要 {minimum_seconds} 秒已转写、无破音的录音。也可以先直接试听。')

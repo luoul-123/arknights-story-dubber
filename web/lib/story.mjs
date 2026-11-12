@@ -51,9 +51,20 @@ export function nextIndex(steps,from,choice){
  for(let i=from+1;i<steps.length;i++)if(!steps[i].route || steps[i].route.includes(choice))return i;
  return -1;
 }
-export function catalogFrom(raw){
- return Object.values(raw).filter(g=>Array.isArray(g.infoUnlockDatas)).map(g=>({id:g.id,title:g.name,type:g.entryType,chapters:g.infoUnlockDatas.filter(s=>s.storyTxt).map(s=>({id:s.storyTxt,title:s.storyName,code:s.storyCode,tag:s.avgTag,sort:s.storySort})).sort((a,b)=>a.sort-b.sort)})).filter(g=>g.chapters.length);
+export const CATEGORIES=[{id:"main",label:"主线"},{id:"side",label:"SideStory"},{id:"collection",label:"故事集"},{id:"personal",label:"个人密录"},{id:"other",label:"其他"}];
+// Early entries use archive-launch timestamps; first-release corrections are sourced in docs/catalog-sources.md.
+const EARLY_MAIN={main_0:"2019-04-30T10:00:00+08:00",main_1:"2019-04-30T10:00:00+08:00",main_2:"2019-04-30T10:00:00+08:00",main_3:"2019-04-30T10:00:00+08:00",main_4:"2019-04-30T10:00:00+08:00",main_5:"2019-07-09T16:00:00+08:00",main_6:"2019-12-24T16:00:00+08:00",main_7:"2020-05-01T16:00:00+08:00"};
+export function releaseDate(timestamp){return timestamp>0?new Date(timestamp*1000+8*3600000).toISOString().slice(0,10):"日期待补";}
+export function catalogFrom(raw,metadata={}){
+ return Object.values(raw).filter(g=>Array.isArray(g.infoUnlockDatas)).map((g,groupSort)=>{
+  const personal=metadata.personal?.[g.id];
+  const category=g.entryType==="MAINLINE"?"main":g.entryType==="ACTIVITY"?"side":g.entryType==="MINI_ACTIVITY"?"collection":personal||g.infoUnlockDatas.some(s=>s.storyTxt?.startsWith("obt/memory/"))?"personal":"other";
+  const releasedAt=personal?.releasedAt>0?personal.releasedAt:EARLY_MAIN[g.id]?Date.parse(EARLY_MAIN[g.id])/1000:metadata.mainline?.[g.id]>0?metadata.mainline[g.id]:g.startTime>0?g.startTime:category==="main"&&g.startShowTime>0?g.startShowTime:null;
+  const operator=personal?.operator||"";
+  return {id:g.id,title:g.name,type:g.entryType,category,operator,releasedAt,date:releaseDate(releasedAt),groupSort,chapters:g.infoUnlockDatas.filter(s=>s.storyTxt).map(s=>({id:s.storyTxt,title:s.storyName||g.name,code:s.storyCode||"",tag:s.avgTag||"",sort:s.storySort||0,releasedAt,category,groupId:g.id,groupTitle:g.name,operator})).sort((a,b)=>a.sort-b.sort)};
+ }).filter(g=>g.chapters.length);
 }
+export function timelineFrom(groups){return groups.flatMap(g=>g.chapters.map(c=>({...c,groupSort:g.groupSort}))).sort((a,b)=>(a.releasedAt||Infinity)-(b.releasedAt||Infinity)||a.groupSort-b.groupSort||a.sort-b.sort);}
 
 export function resolveScene(steps,index,decisions={}){
  let state={background:null,cg:null,actors:[],focus:0},choice=null;
@@ -73,4 +84,11 @@ export function resolveScene(steps,index,decisions={}){
   if(step.type==="choice"&&i<index&&(!step.route||step.route.includes(choice)))choice=decisions[step.id]??choice;
  }
  return state;
+}
+
+export function nextChapter(groups,currentId){
+ const group=groups.find(g=>g.chapters.some(c=>c.id===currentId));if(!group)return null;
+ const index=group.chapters.findIndex(c=>c.id===currentId);if(index+1<group.chapters.length)return group.chapters[index+1];
+ const siblings=groups.filter(g=>g.category===group.category).sort((a,b)=>(a.releasedAt||Infinity)-(b.releasedAt||Infinity)||a.groupSort-b.groupSort);
+ return siblings[siblings.findIndex(g=>g.id===group.id)+1]?.chapters[0]||null;
 }

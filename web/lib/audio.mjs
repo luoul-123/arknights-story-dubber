@@ -1,7 +1,7 @@
 // Last selection wins, even if an older synthesis request completes late.
 export class DialogueAudio {
  constructor({fetcher=(...args)=>globalThis.fetch(...args),makeAudio=()=>new Audio(),onState=()=>{}}={}){
-  this.fetcher=fetcher;this.makeAudio=makeAudio;this.onState=onState;this.generation=0;this.cache=new Map();this.pending=new Map();this.current=null;this.element=null;this.paused=false;
+  this.fetcher=fetcher;this.makeAudio=makeAudio;this.onState=onState;this.generation=0;this.cache=new Map();this.pending=new Map();this.current=null;this.element=null;this.paused=false;this.volume=1;this.rate=1;
  }
  stop(){this.paused=false;this.generation++;if(this.current){this.current.pause();this.current.removeAttribute?.("src");this.current.load?.();this.current=null;}this.controller?.abort();this.onState("idle");}
  key(line,voice){return [line.text,line.speaker,voice?.id,voice?.version].join("|");}
@@ -14,11 +14,12 @@ export class DialogueAudio {
   if(this.cache.size>24){const first=this.cache.keys().next().value;if(first!==key){URL.revokeObjectURL(this.cache.get(first));this.cache.delete(first);}}
   return url;
  }
- async play(line,voice,{volume=1,rate=1,onEnd=()=>{}}={}){
-  this.stop();const generation=this.generation;this.controller=new AbortController();this.onState("loading");
+ setOptions({volume=this.volume,rate=this.rate}={}){this.volume=volume;this.rate=rate;if(this.current){this.current.volume=volume;this.current.playbackRate=rate;}}
+ async play(line,voice,{volume=this.volume,rate=this.rate,onEnd=()=>{}}={}){
+  this.setOptions({volume,rate});this.stop();const generation=this.generation;this.controller=new AbortController();this.onState("loading");
   try{
    const url=await this.load(line,voice,this.controller.signal);if(generation!==this.generation)return;
-   const audio=this.element||(this.element=this.makeAudio());this.current=audio;audio.src=url;audio.volume=volume;audio.playbackRate=rate;
+   const audio=this.element||(this.element=this.makeAudio());this.current=audio;audio.src=url;audio.volume=this.volume;audio.playbackRate=this.rate;
    audio.onended=()=>{if(generation===this.generation){this.onState("ended");onEnd();}};
    audio.onerror=()=>{if(generation===this.generation)this.onState("error","音频播放失败");};
    if(this.paused){this.onState("paused");return;}await audio.play();if(generation===this.generation)this.onState("playing");
@@ -30,4 +31,4 @@ export class DialogueAudio {
  dispose(){this.stop();for(const url of this.cache.values())URL.revokeObjectURL(url);this.cache.clear();}
 }
 
-export function resolveVoice(voices,line){const dedicated=voices.find(v=>!v.kind&&(v.speaker===line.speaker||v.aliases?.includes(line.speaker||"")));if(dedicated)return dedicated;return voices.find(v=>v.kind===(!line.speaker||line.speaker==="旁白"?"narrator":"fallback"));}
+export function resolveVoice(voices,line,override=null){if(override)return override;const dedicated=voices.find(v=>!v.kind&&(v.speaker===line.speaker||v.aliases?.includes(line.speaker||"")));if(dedicated)return dedicated;return voices.find(v=>v.kind===(!line.speaker||line.speaker==="旁白"?"narrator":"fallback"));}

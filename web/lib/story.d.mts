@@ -4,5 +4,11 @@ export function imageUrl(kind:string,name?:string):string|null;
 export function parseStory(raw:string,id?:string):{id:string;steps:any[];warnings:string[]};
 export function clean(text:string):string;
 export function nextIndex(steps:any[],from:number,choice:string|null):number;
-export function catalogFrom(raw:any):any[];
+export function catalogFrom(raw:any,metadata?:any):any[];
 export function resolveScene(steps:any[],index:number,decisions?:Record<string,string>):{background:string|null;cg:string|null;actors:{key:string;url:string}[];focus:number};
+
+export const CATEGORIES:{id:string;label:string}[];
+export function releaseDate(timestamp:number|null):string;
+export function timelineFrom(groups:any[]):any[];
+
+export function nextChapter(groups:any[],currentId:string):any|null;

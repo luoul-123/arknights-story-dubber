@@ -4,13 +4,13 @@ from pathlib import Path
 from urllib.request import Request,urlopen
 DATA_ROOT="https://raw.githubusercontent.com/ArknightsAssets/ArknightsGamedata/master/cn/gamedata/excel/"
 VOICE_ROOT="https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/"
-def source_json(data_dir,name):
-    if name not in ("character_table","charword_table"):raise ValueError("Unknown data source")
+def source_json(data_dir,name,timeout=40):
+    if name not in ("character_table","charword_table","handbook_info_table","zone_table"):raise ValueError("Unknown data source")
     cache=data_dir/"sources";cache.mkdir(exist_ok=True);target=cache/(name+".json")
     if target.exists() and time.time()-target.stat().st_mtime<86400:return json.loads(target.read_text("utf-8"))
     req=Request(DATA_ROOT+name+".json",headers={"User-Agent":"ZhouSheng-Local-Reference/1"})
     try:
-        with urlopen(req,timeout=40) as response:raw=response.read(40*1024*1024+1)
+        with urlopen(req,timeout=timeout) as response:raw=response.read(40*1024*1024+1)
         if len(raw)>40*1024*1024:raise ValueError("资源索引过大")
         result=json.loads(raw)
         target.write_text(json.dumps(result,ensure_ascii=False),encoding="utf-8")
@@ -29,9 +29,9 @@ def fetch_reference(data_dir,name):
     words=table["charWords"]
     candidates=[w for w in words.values() if w.get("charId")==ident and w.get("voiceAsset") and w.get("voiceText") and 12<=len(w["voiceText"])<=80 and not re.search(r"[<>]",w["voiceText"])]
     order={"交谈2":0,"任命助理":1,"交谈1":2,"交谈3":3}
-    candidates.sort(key=lambda w:(order.get(w.get("voiceTitle"),9),abs(len(w["voiceText"])-30)))
+    candidates.sort(key=lambda w:(len(w["voiceText"])>40,order.get(w.get("voiceTitle"),9),abs(len(w["voiceText"])-25)))
     folder=data_dir/"reference-imports";folder.mkdir(exist_ok=True)
-    for word in candidates[:5]:
+    for word in candidates[:12]:
         asset=word["voiceAsset"].lower()
         if not re.fullmatch(r"char_[a-z0-9_]+/cn_[0-9]+",asset):continue
         url=VOICE_ROOT+asset+".mp3"
