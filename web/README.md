@@ -40,14 +40,14 @@ GPU 服务默认仅监听 127.0.0.1:9881，推理进程使用 9882；使用 HTTP
 ## 当前演出范围
 已实现背景、独立人物层、双人焦点、CG、文本、选项分支、回顾、逐字显示、自动播放、浏览器本地进度与手动存档入口、音频停止、下一句预取、自动 NPC/旁白配音与随身听。剧情目录按上游目录加载。
 
-这是网页视觉小说实现，不承诺逐帧复刻原游戏：音乐逻辑资源映射、复杂动画/镜头轨迹、特殊脚本指令和完整表情叠层尚未实现；未知指令由解析器记录。章节通过网络读取上游资源；上游不可用时会显示重试提示。人物图片提供目录/单文件回退。
+这是网页视觉小说实现，不承诺逐帧复刻原游戏：音乐逻辑资源映射、复杂动画/镜头轨迹、特殊脚本指令和完整表情叠层尚未实现；未知指令由解析器记录。剧情目录和章节由本机后端通过系统网络设置读取，主来源不可用时使用备用来源；有效数据缓存至 .voice-data/stories，已缓存内容直接返回，过期内容后台刷新，网络失败不会覆盖缓存。未缓存章节仍需联网；图片资源仍按需联网读取。人物图片提供目录/单文件回退。
 
 ## 来源
 原创网站与后端适配代码沿用本项目 MIT 许可。剧情、立绘、CG、背景属于鹰角网络及相应权利人，不纳入原创代码许可。网页运行时访问 ArknightsAssets/ArknightsGamedata 与 ArknightsAssets/ArknightsAssets2。未使用泰拉文库的前端源码。
 
 ## 验证
 node --test tests/core.test.mjs
-..\.venv\Scripts\python.exe backend/test_service.py
+..\.venv\Scripts\python.exe -m unittest discover -s backend -p "test_*.py"
 npx tsc --noEmit
 npm run build
 node tests/browser-smoke.mjs（本机服务启动后，使用隐藏 Edge，测试声音静音）

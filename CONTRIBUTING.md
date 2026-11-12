@@ -10,7 +10,7 @@
 
 1. 按 [README](README.md) 安装网页版及后端依赖。
 2. 在自己的分支中修改；用户入口和管理操作均在网页内，不再添加桌面 UI 或 OCR 依赖。
-3. 在 web 目录运行 node --test tests/core.test.mjs、..\.venv\Scripts\python.exe backend/test_service.py、npx tsc --noEmit 和 npm run build。
+3. 在 web 目录运行 node --test tests/core.test.mjs、..\.venv\Scripts\python.exe -m unittest discover -s backend -p "test_*.py"、npx tsc --noEmit 和 npm run build。
 4. 涉及播放流程时，启动本机服务后运行 node tests/browser-smoke.mjs；该检查使用 Windows Edge 并静音。
 5. 提交时说明改动、验证方式及尚未验证的范围。
 

@@ -26,6 +26,8 @@ NARRATION = None
 NARRATION_LOCK = threading.RLock()
 ENDPOINT = os.environ.get("GPT_SOVITS_URL", "http://127.0.0.1:9882").rstrip("/")
 STORE = DATA / "characters.json"
+from story_source import StorySource
+STORIES = StorySource(DATA / "stories")
 
 def read_store():
     if not STORE.exists(): return {}
@@ -301,6 +303,8 @@ class Handler(BaseHTTPRequestHandler):
         parsed=urlparse(self.path); path=parsed.path.strip("/"); query=parse_qs(parsed.query)
         try:
             if self.command=="GET":
+                if path=="stories":
+                    return self.reply(STORIES.get(query.get("id",[None])[0]))
                 if path=="voices":
                     with LOCK:
                         voices=[{"id":c["id"],"speaker":c["speaker"],"aliases":c.get("aliases",[]),"version":c["published"]["version"]} for c in read_store().values() if c.get("published")]
