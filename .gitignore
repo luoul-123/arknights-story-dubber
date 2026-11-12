@@ -7,3 +7,10 @@ models/
 app_settings.json
 *.pyc
 演示截图.png
+
+.cache/
+*.log
+.env
+.env.*
+*.pem
+*.key

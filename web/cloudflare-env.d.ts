@@ -1,0 +1,1 @@
+declare namespace Cloudflare { interface Env { DB: D1Database; BUCKET: R2Bucket; VOICE_BACKEND_URL?:string;VOICE_BACKEND_TOKEN?:string;STUDIO_ADMIN_USER_ID?:string; CONNECTORS?:any; } }

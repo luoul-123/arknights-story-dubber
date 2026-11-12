@@ -1,0 +1,13 @@
+node_modules/
+dist/
+.next/
+.vinext/
+.wrangler/
+.sites-runtime/
+.env*
+.dev.vars*
+outputs/
+work/
+.voice-data/
+backend/__pycache__/
+*.tsbuildinfo

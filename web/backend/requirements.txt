@@ -1,0 +1,7 @@
+numpy>=2.0
+PyYAML>=6
+imageio-ffmpeg>=0.6
+faster-whisper>=1.2
+huggingface-hub>=0.30
+requests>=2.32
+uv>=0.6
