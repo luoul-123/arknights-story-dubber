@@ -132,7 +132,7 @@ export default function Theater(){
     <label className="slider-setting"><span>背景音乐音量 <b>{Math.round(musicVolume*100)}%</b></span><input aria-label="背景音乐音量" type="range" min="0" max="1" step=".05" value={musicVolume} onChange={e=>setMusicVolume(+e.target.value)}/></label>
     <label className="slider-setting"><span>配音音量 <b>{Math.round(volume*100)}%</b></span><input type="range" min="0" max="1" step=".05" aria-label="配音音量" value={volume} onChange={e=>setVolume(+e.target.value)}/></label>
     <label className="slider-setting"><span>播放速度 <b>{rate.toFixed(1)}×</b></span><input type="range" min=".7" max="1.5" step=".1" aria-label="播放速度" value={rate} onChange={e=>setRate(+e.target.value)}/></label>
-    <a className="developer-log-link" href="https://github.com/luoul-123/arknights-story-dubber/blob/main/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
+    <a className="developer-log-link" href="https://github.com/luoul-123/arknights-story-dubber/blob/main/web/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
    {drawer==="studio"&&<><ReadingVoiceSettings voices={voices} selected={readerVoice} onSelect={selectReaderVoice}/></>}
   </aside></div>}

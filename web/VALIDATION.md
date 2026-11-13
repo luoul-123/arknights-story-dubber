@@ -89,4 +89,4 @@
 
 ## 2026-11-13 开发者日志链接
 
-阅读设置中的日志正文移至仓库根目录 docs/developer-log.md；网页只保留指向 GitHub Markdown 页面的链接。
+阅读设置中的日志正文移至 web/docs/developer-log.md；网页只保留指向 GitHub Markdown 页面的链接。
