@@ -32,8 +32,10 @@ try{
  assert.equal(await evaluate('document.querySelector("a[aria-label^=GitHub]").href'),'https://github.com/luoul-123/arknights-story-dubber');
  const heading=await evaluate('document.querySelector(".chapter-heading").textContent');assert.ok(heading.includes('黑暗时代'));console.log('COLLECTION_HEADER',heading);
  await evaluate('document.querySelector("button[aria-label=阅读设置]").click()');
- await until('Boolean(document.querySelector(".developer-log"))');await evaluate('document.querySelector(".developer-log").open=true');
- assert.equal(await evaluate('document.querySelector(".developer-log li p").textContent'),'新增阿米娅音色语音包');
+ await until('Boolean(document.querySelector(".developer-log-link"))');
+ assert.equal(await evaluate('document.querySelector(".developer-log-link").href'),'https://github.com/luoul-123/arknights-story-dubber/blob/main/docs/developer-log.md');
+ assert.equal(await evaluate('document.querySelector(".developer-log-link").target'),'_blank');
+ assert.ok(await evaluate('!document.querySelector(".settings").textContent.includes("新增阿米娅音色语音包")'));
  assert.ok(await evaluate('!document.querySelector(".drawer").textContent.includes("键盘操作")&&!document.querySelector(".drawer").textContent.includes("角色语音服务已配置")'));await screenshot('preset-reading-settings');
  await evaluate('document.querySelector("button[aria-label=关闭面板]").click();document.querySelector("button[aria-label=朗读音色设置]").click()');
  await until('Boolean(document.querySelector("[aria-label=朗读音色]"))');

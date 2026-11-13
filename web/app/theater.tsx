@@ -132,7 +132,7 @@ export default function Theater(){
     <label className="slider-setting"><span>背景音乐音量 <b>{Math.round(musicVolume*100)}%</b></span><input aria-label="背景音乐音量" type="range" min="0" max="1" step=".05" value={musicVolume} onChange={e=>setMusicVolume(+e.target.value)}/></label>
     <label className="slider-setting"><span>配音音量 <b>{Math.round(volume*100)}%</b></span><input type="range" min="0" max="1" step=".05" aria-label="配音音量" value={volume} onChange={e=>setVolume(+e.target.value)}/></label>
     <label className="slider-setting"><span>播放速度 <b>{rate.toFixed(1)}×</b></span><input type="range" min=".7" max="1.5" step=".1" aria-label="播放速度" value={rate} onChange={e=>setRate(+e.target.value)}/></label>
-    <details className="developer-log"><summary>开发者日志</summary><ol><li><time>2026-11-13</time><p>新增阿米娅音色语音包</p></li><li><time>2026-11-13</time><p>新增预设朗读音色选择，精简阅读界面。</p></li><li><time>2026-11-13</time><p>优化连续跳句请求，修复立绘差分、背景音乐及存档恢复。</p></li><li><time>2026-11-13</time><p>底部导航新增上一句、下一章说明，支持按目录顺序切换章节。</p></li></ol></details>
+    <a className="developer-log-link" href="https://github.com/luoul-123/arknights-story-dubber/blob/main/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
    {drawer==="studio"&&<><ReadingVoiceSettings voices={voices} selected={readerVoice} onSelect={selectReaderVoice}/></>}
   </aside></div>}

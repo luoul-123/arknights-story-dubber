@@ -21,7 +21,7 @@
 
 .actor{position:absolute}
 
-.developer-log{border-top:1px solid var(--line);padding:22px 0;margin-top:20px}.developer-log summary{cursor:pointer}.developer-log ol{padding-left:20px}.developer-log li{padding:14px 0;font-size:13px}.developer-log time{color:var(--muted);font-size:11px}.chapter-heading>span:first-child{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.developer-log-link{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding:22px 0;margin-top:20px;font-size:13px;text-decoration:none}.developer-log-link:hover{color:var(--paper)}.developer-log-link span{font-size:15px}.chapter-heading>span:first-child{max-width:240px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 
 .chapter-nav-button{display:flex;align-items:center;justify-content:center;gap:4px;color:#bac4bf;padding:4px 0}.chapter-nav-button small{font-size:10px;white-space:nowrap;color:var(--muted)}.chapter-nav-button:hover:not(:disabled){color:var(--mint)}@media(max-width:600px){.chapter-nav-button{gap:2px}.chapter-nav-button svg{width:16px}.chapter-nav-button small{font-size:9px}.control-center{gap:9px}}
 
