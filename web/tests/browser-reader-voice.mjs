@@ -20,7 +20,7 @@ try{
 
  await send("Page.enable");await send("Runtime.enable");await send("Network.enable");
  const requests=[];const handle=socket.onmessage;socket.onmessage=e=>{handle(e);const m=JSON.parse(e.data);if(m.method==='Network.requestWillBeSent'&&m.params.request.url.endsWith('/api/voice/speech')){try{requests.push(JSON.parse(m.params.request.postData));}catch{}}};
- await send("Page.addScriptToEvaluateOnNewDocument",{source:'const orig=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){window.__lastAudio=this;return orig.apply(this,arguments)};'});
+ await send("Page.addScriptToEvaluateOnNewDocument",{source:'const orig=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){if(!this.dataset.storyMusic)window.__lastAudio=this;return orig.apply(this,arguments)};'});
  const until=async expression=>{for(let i=0;i<240;i++){if(await evaluate(expression))return;await pause(500);}throw Error('Timed out: '+expression);};
  await send("Emulation.setDeviceMetricsOverride",{width:1440,height:960,deviceScaleFactor:1,mobile:false});
  await send("Page.navigate",{url:"http://127.0.0.1:5173/signin-with-chatgpt?return_to=/"});

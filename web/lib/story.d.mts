@@ -5,7 +5,7 @@ export function parseStory(raw:string,id?:string):{id:string;steps:any[];warning
 export function clean(text:string):string;
 export function nextIndex(steps:any[],from:number,choice:string|null):number;
 export function catalogFrom(raw:any,metadata?:any):any[];
-export function resolveScene(steps:any[],index:number,decisions?:Record<string,string>):{background:string|null;cg:string|null;actors:{key:string;url:string}[];focus:number};
+export function resolveScene(steps:any[],index:number,decisions?:Record<string,string>):{background:string|null;cg:string|null;actors:{key:string;url:string}[];focus:number;music:{key:string;intro:string|null;event:string}|null;musicVolume:number};
 
 export const CATEGORIES:{id:string;label:string}[];
 export function releaseDate(timestamp:number|null):string;

@@ -32,6 +32,8 @@ from catalog_metadata import CatalogMetadata
 CATALOG_METADATA = CatalogMetadata(DATA)
 from default_voices import read_defaults, save_defaults, defaults_version, selected_default
 import reader_voice
+from media_source import MediaSource
+MEDIA=MediaSource(DATA/"media")
 
 def read_store():
     if not STORE.exists(): return {}
@@ -320,10 +322,10 @@ def queue_job(kind, ident, epochs=2):
 class Handler(BaseHTTPRequestHandler):
     server_version = "ZhouSheng/1"
     def log_message(self, fmt, *args): pass  # Never log credentials or uploaded content.
-    def reply(self, value, status=200):
+    def reply(self, value, status=200, content_type=None):
         if isinstance(value, bytes): body=value; mime="audio/wav"
         else: body=json.dumps(value, ensure_ascii=False).encode(); mime="application/json; charset=utf-8"
-        self.send_response(status); self.send_header("Content-Type",mime); self.send_header("Content-Length",str(len(body))); self.send_header("Cache-Control","no-store"); self.end_headers()
+        self.send_response(status); self.send_header("Content-Type",content_type or mime); self.send_header("Content-Length",str(len(body))); self.send_header("Cache-Control","no-store"); self.end_headers()
         try: self.wfile.write(body)
         except (BrokenPipeError, ConnectionResetError): pass
     def dispatch(self):
@@ -333,6 +335,8 @@ class Handler(BaseHTTPRequestHandler):
         reader=self.headers.get("X-Reader-Id","")
         try:
             if self.command=="GET":
+                if path=="media":
+                    body,mime=MEDIA.get(query.get("kind",[""])[0],query.get("name",[""])[0]);return self.reply(body,content_type=mime)
                 if path=="stories":
                     ident=query.get("id",[None])[0];result=STORIES.get(ident)
                     if ident is None:result["metadata"]=CATALOG_METADATA.get()

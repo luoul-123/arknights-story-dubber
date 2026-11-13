@@ -19,7 +19,7 @@ try{
  const screenshot=async name=>{const r=await send("Page.captureScreenshot",{format:"png"});await fs.writeFile(path.join(root,"work",name+".png"),Buffer.from(r.data,"base64"));};
 
  await send("Page.enable");await send("Runtime.enable");
- await send("Page.addScriptToEvaluateOnNewDocument",{source:'window.__audioPlays=0;const orig=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){window.__audioPlays++;window.__lastAudio=this;return orig.apply(this,arguments)};'});
+ await send("Page.addScriptToEvaluateOnNewDocument",{source:'window.__audioPlays=0;const orig=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){if(!this.dataset.storyMusic){window.__audioPlays++;window.__lastAudio=this;}return orig.apply(this,arguments)};'});
  await send("Emulation.setDeviceMetricsOverride",{width:1440,height:960,deviceScaleFactor:1,mobile:false});
  const until=async expression=>{for(let i=0;i<400;i++){if(await evaluate(expression))return;await pause(300);}throw Error("Timed out: "+expression);};
  await send("Page.navigate",{url:"http://127.0.0.1:5173/signin-with-chatgpt?return_to=/"});
@@ -39,7 +39,7 @@ try{
    console.log("DRAWER_CONTINUES",JSON.stringify({label,before:before.line,after:after.line,time:after.time}));
    if(label==="阅读设置"){
     const pre=await snapshot();
-    await evaluate('const sliders=document.querySelectorAll(".slider-setting input");const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set;setter.call(sliders[0],"0.6");sliders[0].dispatchEvent(new Event("input",{bubbles:true}));setter.call(sliders[1],"0.8");sliders[1].dispatchEvent(new Event("input",{bubbles:true}));');await pause(100);
+    await evaluate('const sliders=[document.querySelector("input[aria-label=配音音量]"),document.querySelector("input[aria-label=播放速度]")];const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set;setter.call(sliders[0],"0.6");sliders[0].dispatchEvent(new Event("input",{bubbles:true}));setter.call(sliders[1],"0.8");sliders[1].dispatchEvent(new Event("input",{bubbles:true}));');await pause(100);
     const post=await snapshot();assert.equal(post.paused,false);if(pre.line===post.line){assert.equal(post.plays,pre.plays);assert.ok(post.time>=pre.time);}
     const options=await evaluate('({volume:window.__lastAudio.volume,rate:window.__lastAudio.playbackRate})');assert.equal(options.volume,.6);assert.equal(options.rate,.8);console.log("OPTIONS_WITHOUT_RESTART",JSON.stringify(options));
    }

@@ -7,9 +7,10 @@ export function attrs(source=""){
  return out;
 }
 export function imageUrl(kind,name){
- if(!name || !/^[a-zA-Z0-9_#-]+$/.test(name))return null;
+ if(!name || !/^[a-zA-Z0-9_#$-]+$/.test(name))return null;
+ if(kind==="character")return "/api/media?kind=portrait&name="+encodeURIComponent(name);
  const base=name.split("#")[0];
- // Base portraits are reliable; expression overlays require separate composition.
+ // Background and CG identifiers refer to standalone images.
  return MEDIA_ROOT+(kind==="character"?"characters/"+base+"/"+base+".png":(kind==="cg"?"images/":"backgrounds/")+base+".png");
 }
 export function parseStory(raw,id="chapter"){
@@ -21,7 +22,7 @@ export function parseStory(raw,id="chapter"){
   if(named){steps.push({id:id+":"+n++,type:"line",speaker:named[1],text:clean(named[2]),route,scene:structuredClone(state),events:pending.splice(0)});continue;}
   if(cmd){
    const name=cmd[1].toLowerCase(), a=attrs(cmd[2]),tail=cmd[3];
-   if(["background","image","character","charslot"].includes(name))pending.push({name,a,route:route?[...route]:null});
+   if(["background","image","character","charslot","playmusic","stopmusic","musicvolume"].includes(name))pending.push({name,a,route:route?[...route]:null});
    if(name==="background")state={...state,background:imageUrl("background",a.image),cg:null};
    else if(name==="image")state={...state,cg:imageUrl("cg",a.image)};
    else if(name==="character"){
@@ -67,7 +68,8 @@ export function catalogFrom(raw,metadata={}){
 export function timelineFrom(groups){return groups.flatMap(g=>g.chapters.map(c=>({...c,groupSort:g.groupSort}))).sort((a,b)=>(a.releasedAt||Infinity)-(b.releasedAt||Infinity)||a.groupSort-b.groupSort||a.sort-b.sort);}
 
 export function resolveScene(steps,index,decisions={}){
- let state={background:null,cg:null,actors:[],focus:0},choice=null;
+ let state={background:null,cg:null,actors:[],focus:0,music:null,musicVolume:1},choice=null;
+ const slots=new Map();
  for(let i=0;i<=index;i++){
   const step=steps[i];if(!step)break;
   for(const event of step.events||[]){
@@ -75,13 +77,26 @@ export function resolveScene(steps,index,decisions={}){
    const {name,a}=event;
    if(name==="background")state={...state,background:imageUrl("background",a.image),cg:null};
    if(name==="image")state={...state,cg:imageUrl("cg",a.image)};
-   if(name==="character")state={...state,actors:[a.name,a.name2].filter(Boolean).map(key=>({key,url:imageUrl("character",key)})),focus:Number(a.focus||1)-1};
-   if(name==="charslot"){
-    if(!a.name&&!a.focus)state={...state,actors:[]};
-    else{const actors=[...state.actors];const slot={l:0,m:0,r:1}[a.slot]??0;if(a.name)actors[slot]={key:a.name,url:imageUrl("character",a.name)};state={...state,actors:actors.filter(Boolean),focus:a.focus==="r"?1:0};}
+   if(name==="character"){
+    slots.clear();[a.name,a.name2].forEach((key,j)=>{if(key)slots.set(a.name2?(j?'r':'l'):'m',{key,url:imageUrl('character',key),slot:a.name2?(j?'r':'l'):'m'});});
+    state={...state,actors:[...slots.values()],focus:Number(a.focus||1)-1};
    }
+   if(name==="charslot"){
+    if(!Object.keys(a).length)slots.clear();
+    else if(a.slot){
+     const previous=slots.get(a.slot);
+     if(Object.hasOwn(a,'name')){if(a.name)slots.set(a.slot,{...previous,key:a.name,url:imageUrl('character',a.name),slot:a.slot});else slots.delete(a.slot);}
+     const actor=slots.get(a.slot);
+     if(actor){if(a.ato!==undefined)actor.opacity=Number(a.ato);if(a.scale!==undefined)actor.scale=Number(a.scale);if(a.posto)actor.offset=a.posto.split(',').map(Number);}
+    }
+    const actors=['l','m','r'].map(slot=>slots.get(slot)).filter(Boolean);
+    state={...state,actors,focus:a.focus==='all'?-1:a.focus?actors.findIndex(actor=>actor.slot===a.focus):state.focus};
+   }
+   if(name==='playmusic')state={...state,music:{key:a.key||a.intro||'',intro:a.intro||null,event:step.id+':'+i},musicVolume:Number(a.volume??1)};
+   if(name==='stopmusic')state={...state,music:null};
+   if(name==='musicvolume')state={...state,musicVolume:Number(a.volume??1)};
   }
-  if(step.type==="choice"&&i<index&&(!step.route||step.route.includes(choice)))choice=decisions[step.id]??choice;
+  if(step.type==='choice'&&i<index&&(!step.route||step.route.includes(choice)))choice=decisions[step.id]??choice;
  }
  return state;
 }

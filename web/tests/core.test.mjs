@@ -65,3 +65,6 @@ test("volume and speed changes preserve the active sentence and playback positio
 });
 
 test("one reader voice overrides presets, default roles and narration",()=>{const personal={id:"__reader",version:"mine",kind:"reader"};const voices=[{id:"amiya",speaker:"阿米娅"},{id:"__npc",kind:"fallback"},{id:"__narrator",kind:"narrator"}];for(const speaker of ["阿米娅","士兵","旁白",""])assert.equal(resolveVoice(voices,{speaker},personal),personal);assert.equal(resolveVoice(voices,{speaker:"阿米娅"},null).id,"amiya");});
+
+test('new portrait expressions and action-only slots remain visible',()=>{const {steps}=parseStory('[charslot(slot="r",name="avg_180_amgoat_1#3$1")]\n[name="甲"] A\n[charslot(slot="r",posto="10,20",duration=1)]\n[name="甲"] B');const scene=resolveScene(steps,1);assert.equal(scene.actors.length,1);assert.equal(scene.actors[0].slot,'r');assert.match(scene.actors[0].url,/%233%241/);assert.deepEqual(scene.actors[0].offset,[10,20]);});
+test('music state respects branches, volume and stop',()=>{const {steps}=parseStory('[PlayMusic(intro="$a_intro",key="$a_loop",volume=0.6)]\n[name="甲"] A\n[MusicVolume(volume=0.3)]\n[name="甲"] B\n[StopMusic]\n[name="甲"] C');assert.equal(resolveScene(steps,0).music.intro,'$a_intro');assert.equal(resolveScene(steps,1).musicVolume,.3);assert.equal(resolveScene(steps,2).music,null);});

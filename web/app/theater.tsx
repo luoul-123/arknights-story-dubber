@@ -2,6 +2,7 @@
 import {useCallback,useEffect,useRef,useState} from "react";
 import {BookOpen,Settings2,Volume2,VolumeX,ChevronsRight,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Mic2,Upload,Check,RefreshCw,Search,ArrowLeft,LoaderCircle,SkipForward,Keyboard,Cloud,Triangle,Save} from "lucide-react";
 import StoryArchive from "./story-archive";
+import StoryMusic from "./story-music";
 import ReaderStudio from "./reader-studio";
 import {DialogueAudio,resolveVoice} from "../lib/audio.mjs";
 import {nextIndex,nextChapter,resolveScene,MEDIA_ROOT} from "../lib/story.mjs";
@@ -14,7 +15,7 @@ const FIRST:Chapter={id:"obt/main/level_main_00-01_beg",title:"坍塌",code:"0-1
 const BG=MEDIA_ROOT+"backgrounds/bg_cher_1.png";
 function IconButton({label,onClick,active=false,children}:any){return <button className={"icon-button "+(active?"active":"")} title={label} aria-label={label} onClick={onClick}>{children}</button>;}
 async function api(path:string,options?:RequestInit):Promise<any>{const r=await fetch("/api/voice/"+path,options);const j:any=await r.json();if(!r.ok)throw Error(j.error||"操作失败");return j;}
-function Actor({actor,focus,total}:any){const [attempt,setAttempt]=useState(0);useEffect(()=>setAttempt(0),[actor.key]);const base=actor.key.split("#")[0];const urls=[actor.url,MEDIA_ROOT+"characters/"+base+".png"];if(attempt>=urls.length)return null;return <img alt="" className={"actor "+(focus?"focused":"dimmed")+" "+(total===1?"solo":"")} src={urls[attempt]} onError={()=>setAttempt(a=>a+1)}/>;}
+function Actor({actor,focus,total}:any){const [failed,setFailed]=useState(false);useEffect(()=>setFailed(false),[actor.key]);if(failed)return null;return <img alt="" className={"actor "+(focus?"focused":"dimmed")+" "+(total===1?"solo":"")+" actor-slot-"+(actor.slot||"m")} style={{opacity:actor.opacity,translate:actor.offset?actor.offset[0]+"px "+(-actor.offset[1])+"px":undefined,scale:actor.scale}} src={actor.url} onError={()=>setFailed(true)}/>;}
 export default function Theater(){
  const [chapter,setChapter]=useState<Chapter>(FIRST),[steps,setSteps]=useState<Step[]>([]),[index,setIndex]=useState(0),[choice,setChoice]=useState<string|null>(null),[decisions,setDecisions]=useState<Record<string,string>>({});
  const [catalog,setCatalog]=useState<Group[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState(""),[drawer,setDrawer]=useState<string|null>(null),[search,setSearch]=useState("");
@@ -22,7 +23,7 @@ export default function Theater(){
  const [readerVoice,setReaderVoice]=useState<Voice|null>(null);
  const selectReaderVoice=(voice:Voice|null)=>{setReaderVoice(voice);localStorage.setItem("terra-reader-mode",voice?"unified":"characters");};
  const [listening,setListening]=useState(false);const listeningRef=useRef(false),moveRef=useRef<()=>void>(()=>{}),backRef=useRef<()=>void>(()=>{});
- const [auto,setAuto]=useState(false),[muted,setMuted]=useState(false),[volume,setVolume]=useState(.85),[rate,setRate]=useState(1);
+ const [auto,setAuto]=useState(false),[muted,setMuted]=useState(false),[musicVolume,setMusicVolume]=useState(.35),[volume,setVolume]=useState(.85),[rate,setRate]=useState(1);
  const [voices,setVoices]=useState<Voice[]>([]),[voiceStatus,setVoiceStatus]=useState("idle"),[voiceError,setVoiceError]=useState(""),[backend,setBackend]=useState<any>({connected:false,admin:false});
  const [started,setStarted]=useState(false),[ended,setEnded]=useState(false),[full,setFull]=useState(false),[saved,setSaved]=useState<any>(null),[toast,setToast]=useState("");
  const chapterEpoch=useRef(0);
@@ -30,20 +31,20 @@ export default function Theater(){
  const step=steps[index],text=step?.text||"",characters=Array.from(text),complete=!typing||shown>=characters.length;
  useEffect(()=>{player.current=new DialogueAudio({onState:(state:string,msg?:string)=>{setVoiceStatus(state);setVoiceError(msg||"");if("mediaSession" in navigator)navigator.mediaSession.playbackState=state==="playing"?"playing":state==="paused"?"paused":"none";}});return()=>{player.current?.dispose();window.speechSynthesis?.cancel();};},[]);
  useEffect(()=>{
-  try{const s=JSON.parse(localStorage.getItem("zhousheng-progress")||"null");if(s)setSaved(s);const settings=JSON.parse(localStorage.getItem("zhousheng-settings")||"null");if(settings){setTyping(settings.typing??true);setVolume(settings.volume??.85);}}catch{}
+  try{const s=JSON.parse(localStorage.getItem("terra-manual-save")||localStorage.getItem("zhousheng-progress")||"null");if(s)setSaved(s);const settings=JSON.parse(localStorage.getItem("zhousheng-settings")||"null");if(settings){setTyping(settings.typing??true);setVolume(settings.volume??.85);setMusicVolume(settings.musicVolume??.35);}}catch{}
   fetch("/api/stories?catalog=2").then(r=>{if(!r.ok)throw Error();return r.json() as Promise<Group[]>;}).then(setCatalog).catch(()=>{});
   api("status").then(status=>{setBackend(status);if(status.userId&&localStorage.getItem("terra-reader-mode")==="unified")api("reader/voice").then(p=>setReaderVoice(p.voice)).catch(()=>{});}).catch(()=>{});
   api("voices").then(j=>setVoices(j.voices||[])).catch(e=>setVoiceError(e.message));
  },[]);
- useEffect(()=>{localStorage.setItem("zhousheng-settings",JSON.stringify({typing,volume}));},[typing,volume]);
+ useEffect(()=>{localStorage.setItem("zhousheng-settings",JSON.stringify({typing,volume,musicVolume}));},[typing,volume,musicVolume]);
  const loadChapter=useCallback(async(c:Chapter,resume?:any)=>{
   const requestId=++chapterEpoch.current;player.current?.stop();window.speechSynthesis?.cancel();speechEpoch.current++;setStarted(false);setLoading(true);setError("");setEnded(false);setHistory([]);setChapter(c);setSteps([]);
-  try{const r=await fetch("/api/stories?id="+encodeURIComponent(c.id));const j:any=await r.json();if(requestId!==chapterEpoch.current)return;if(!r.ok)throw Error(j.error);if(!j.steps.length)throw Error("本章暂时没有可读取的台词");setSteps(j.steps);setIndex(Math.min(resume?.index||0,j.steps.length-1));setChoice(resume?.choice||null);setDecisions(resume?.decisions||{});if(listeningRef.current)setStarted(true);}
+  try{const r=await fetch("/api/stories?media=2&id="+encodeURIComponent(c.id));const j:any=await r.json();if(requestId!==chapterEpoch.current)return;if(!r.ok)throw Error(j.error);if(!j.steps.length)throw Error("本章暂时没有可读取的台词");setSteps(j.steps);setIndex(Math.min(resume?.index||0,j.steps.length-1));setChoice(resume?.choice||null);setDecisions(resume?.decisions||{});if(listeningRef.current)setStarted(true);}
   catch(e){if(requestId===chapterEpoch.current)setError((e as Error).message||"章节加载失败");}finally{if(requestId===chapterEpoch.current)setLoading(false);}
  },[]);
- useEffect(()=>{loadChapter(FIRST);},[loadChapter]);
+ useEffect(()=>{let resume=null;try{resume=JSON.parse(localStorage.getItem("terra-manual-save")||localStorage.getItem("zhousheng-progress")||"null");}catch{}loadChapter(resume?.chapter||FIRST,resume);},[loadChapter]);
  useEffect(()=>{setShown(0);if(!step||!typing)return;const timer=setInterval(()=>setShown(n=>Math.min(n+1,Array.from(step.text||"").length)),30);return()=>clearInterval(timer);},[step?.id,typing]);
- useEffect(()=>{if(!step||loading)return;const data={chapter,index,choice,decisions,time:Date.now()};localStorage.setItem("zhousheng-progress",JSON.stringify(data));},[chapter,index,choice,decisions,step,loading]);
+ useEffect(()=>{if(!step||loading||!started)return;const data={chapter,index,choice,decisions,time:Date.now()};localStorage.setItem("zhousheng-progress",JSON.stringify(data));},[chapter,index,choice,decisions,step,loading,started]);
  useEffect(()=>{player.current?.setOptions({volume,rate});},[volume,rate]);
  const voiceFor=useCallback((line:Step)=>resolveVoice(voices,line,readerVoice),[voices,readerVoice]);
  const playCurrent=useCallback(()=>{
@@ -89,10 +90,11 @@ export default function Theater(){
  const continueSection=async()=>{if(!nextSection)return;setDrawer(null);await loadChapter(nextSection);setStarted(true);};
  const fullScreen=async()=>{if(document.fullscreenElement)await document.exitFullscreen();else await stage.current?.requestFullscreen();setFull(!!document.fullscreenElement);};
  return <main className="theater" ref={stage}>
+  <StoryMusic music={scene?.music} volume={musicVolume*(scene?.musicVolume??1)} active={started&&!loading&&!ended&&!(listening&&voiceStatus==="paused")}/>
   <div className="scene" onClick={advance} aria-hidden="true">
    <img key={scene?.background||"blank"} className="background" style={{opacity:started&&!scene?.background?0:undefined}} src={scene?.background||BG} alt="" onError={e=>{e.currentTarget.style.opacity="0";}}/>
    <div className="scene-shade"/>
-   {!scene?.cg&&<div className="actors">{scene?.actors?.map((actor,i)=><Actor key={actor.key+i} actor={actor} focus={scene.focus===i} total={scene.actors.length}/>)}</div>}
+   {!scene?.cg&&<div className="actors">{scene?.actors?.map((actor,i)=><Actor key={actor.key+i} actor={actor} focus={scene.focus<0||scene.focus===i} total={scene.actors.length}/>)}</div>}
    {scene?.cg&&<img key={scene.cg} className="cg" src={scene.cg} alt="剧情 CG" onError={e=>{e.currentTarget.style.opacity="0";}}/>}
    <div className="scene-grain"/><div className="vignette"/>
   </div>
@@ -113,7 +115,7 @@ export default function Theater(){
    <div className="dialogue-bottom"><span className="line-number">{String(index+1).padStart(3,"0")} <span>/ {String(steps.length).padStart(3,"0")}</span></span><span className="click-hint">{voiceError||(!complete?"点击显示完整台词":"点击继续 · Space")}</span></div>
   </section>}
   <footer className="controlbar">
-   <div className="control-left"><button onClick={()=>openDrawer("chapters")}><BookOpen size={16}/>目录</button><span className="control-sep"/><button onClick={()=>openDrawer("history")}><History size={16}/>回顾</button><button onClick={()=>{setSaved({chapter,index,choice,decisions});setToast("阅读进度已保存在此浏览器");}}><Save size={16}/>存档</button></div>
+   <div className="control-left"><button onClick={()=>openDrawer("chapters")}><BookOpen size={16}/>目录</button><span className="control-sep"/><button onClick={()=>openDrawer("history")}><History size={16}/>回顾</button><button disabled={loading||!step} onClick={()=>{const snapshot={chapter,index,choice,decisions,time:Date.now()};localStorage.setItem("terra-manual-save",JSON.stringify(snapshot));setSaved(snapshot);setToast("存档已保存在此浏览器，刷新后可继续");}}><Save size={16}/>存档</button></div>
    <div className="control-center"><IconButton label="上一句" onClick={back}><ChevronLeft size={21}/></IconButton><button className={"auto-button "+(auto?"active":"")} onClick={()=>{if(listening){if(voiceStatus==="paused")player.current.resume();else player.current.pause();}else{if(!started)setStarted(true);setAuto(a=>!a);}}}>{(listening?voiceStatus!=="paused":auto)?<Pause size={14}/>:<Play size={14}/>}<span className="play-label">{listening?(voiceStatus==="paused"?"播放":"暂停"):"自动"}</span><span>{listening?"LISTEN":"AUTO"}</span></button><IconButton label="立即跳过当前句" onClick={()=>{if(!started)setStarted(true);else move();}}><SkipForward size={19}/></IconButton></div>
    <div className="control-right"><IconButton label={muted?"开启配音":"静音"} active={!muted} onClick={()=>setMuted(m=>!m)}>{muted?<VolumeX size={18}/>:<Volume2 size={18}/>}</IconButton><button className="voice-label" onClick={()=>openDrawer("settings")}>{voices.length?"配音已就绪":"配音设置"}</button><span className="control-sep"/><IconButton label="全屏" onClick={fullScreen}>{full?<Minimize size={17}/>:<Maximize size={17}/>}</IconButton></div>
   </footer>
@@ -127,8 +129,9 @@ export default function Theater(){
    {drawer==="history"&&<div className="backlog">{!history.length?<p className="muted">读过的台词会出现在这里。</p>:history.map((h,i)=><button key={i} onClick={()=>{setIndex(h.index);setChoice(h.choice);setHistory(old=>old.slice(0,i));setEnded(false);setDrawer(null);}}><span>{String(h.index+1).padStart(3,"0")}</span><div><b>{h.step.speaker||"博士的选择"}</b><p>{h.step.text||"选择对话分支"}</p></div><ChevronRight size={15}/></button>)}</div>}
    {drawer==="settings"&&<div className="settings">
     <div className="setting-row"><div><b>逐字显示台词</b><p>点击补全，再点击推进剧情</p></div><button className={"switch "+(typing?"on":"")} aria-label="逐字显示台词" aria-pressed={typing} onClick={()=>setTyping(t=>!t)}><span/></button></div>
-    <label className="slider-setting"><span>配音音量 <b>{Math.round(volume*100)}%</b></span><input type="range" min="0" max="1" step=".05" value={volume} onChange={e=>setVolume(+e.target.value)}/></label>
-    <label className="slider-setting"><span>播放速度 <b>{rate.toFixed(1)}×</b></span><input type="range" min=".7" max="1.5" step=".1" value={rate} onChange={e=>setRate(+e.target.value)}/></label>
+    <label className="slider-setting"><span>背景音乐音量 <b>{Math.round(musicVolume*100)}%</b></span><input aria-label="背景音乐音量" type="range" min="0" max="1" step=".05" value={musicVolume} onChange={e=>setMusicVolume(+e.target.value)}/></label>
+    <label className="slider-setting"><span>配音音量 <b>{Math.round(volume*100)}%</b></span><input type="range" min="0" max="1" step=".05" aria-label="配音音量" value={volume} onChange={e=>setVolume(+e.target.value)}/></label>
+    <label className="slider-setting"><span>播放速度 <b>{rate.toFixed(1)}×</b></span><input type="range" min=".7" max="1.5" step=".1" aria-label="播放速度" value={rate} onChange={e=>setRate(+e.target.value)}/></label>
     <div className="info-box"><Keyboard size={18}/><div><b>键盘操作</b><p>空格 / → 推进台词<br/>A 开关自动播放 · H 打开回顾<br/>Esc 关闭面板</p></div></div>
     <div className="info-box"><Headphones size={18}/><div><b>{backend.connected?"角色语音服务已配置":"角色语音服务待连接"}</b><p>默认按角色配音；在录音室选用自己的声音后，所有台词与旁白统一朗读。随身听遇到选项或段落结束时等待确认。</p><button className="text-button" onClick={()=>setDrawer("studio")}>打开音色工作室 <ChevronRight size={14}/></button></div></div>
    </div>}
