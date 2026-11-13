@@ -16,6 +16,7 @@ try{
  socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const [r,j]=pending.get(m.id)||[];pending.delete(m.id);if(m.error)j?.(Error(JSON.stringify(m.error)));else r?.(m.result);}if(m.method==="Runtime.exceptionThrown")errors.push(m.params.exceptionDetails.text);};
  const send=(method,params={})=>new Promise((r,j)=>{const id=++seq;pending.set(id,[r,j]);socket.send(JSON.stringify({id,method,params}));});
  const evaluate=async expression=>{const r=await send("Runtime.evaluate",{expression,userGesture:true,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.text);return r.result.value;};
+ const nextLine=async()=>{if(await evaluate('document.querySelector(".dialogue-text")?.getAttribute("aria-label")==="显示完整台词"')){await evaluate('document.querySelector(".dialogue-text").click()');await pause(60);}await evaluate('document.querySelector(".dialogue-text").click()');};
  const screenshot=async name=>{const r=await send("Page.captureScreenshot",{format:"png"});await fs.writeFile(path.join(root,"work",name+".png"),Buffer.from(r.data,"base64"));};
 
  await send('Page.enable');await send('Runtime.enable');
@@ -33,10 +34,10 @@ try{
  await evaluate('const setter=Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,"value").set;for(const [label,value] of [["背景音乐音量","0.2"],["配音音量","0.6"]]){const e=document.querySelector("input[aria-label="+label+"]");setter.call(e,value);e.dispatchEvent(new Event("input",{bubbles:true}));}');await pause(250);
  const volume=await evaluate('({time:document.querySelector("audio[data-story-music]").currentTime,volume:document.querySelector("audio[data-story-music]").volume,settings:JSON.parse(localStorage.getItem("zhousheng-settings"))})');assert.ok(volume.time>before);assert.equal(volume.settings.volume,.6);assert.equal(volume.settings.musicVolume,.2);assert.ok(volume.volume<=.2);console.log('SEPARATE_VOLUMES',volume);await screenshot('media-volume-settings');
  await evaluate('document.querySelector("button[aria-label=关闭面板]").click()');
- for(let i=0;i<8;i++){await evaluate('document.querySelector("button[aria-label=立即跳过当前句]").click()');await pause(80);if(await evaluate('document.querySelector(".actor") && document.querySelector(".actor").src!=='+JSON.stringify(initial.src)))break;}
+ for(let i=0;i<8;i++){await nextLine();await pause(80);if(await evaluate('document.querySelector(".actor") && document.querySelector(".actor").src!=='+JSON.stringify(initial.src)))break;}
  await until('Boolean(document.querySelector(".actor")?.naturalWidth)');const changed=await evaluate('document.querySelector(".actor").src');assert.notEqual(changed,initial.src);console.log('EXPRESSION_CHANGED',changed);
  await evaluate('[...document.querySelectorAll(".control-left button")].find(b=>b.textContent.includes("存档")).click()');const saved=await evaluate('JSON.parse(localStorage.getItem("terra-manual-save"))');
- await evaluate('document.querySelector("button[aria-label=立即跳过当前句]").click()');
+ await nextLine();
  for(let pass=0;pass<2;pass++){await evaluate('location.reload()');await until('Boolean(document.querySelector(".entry-actions .primary"))');const restored=await evaluate('JSON.parse(localStorage.getItem("terra-manual-save"))');assert.deepEqual(restored,saved);assert.ok(await evaluate('document.querySelector(".chapter-heading").textContent.includes("SL-1")'));await evaluate('document.querySelector("button[aria-label=静音]").click();document.querySelector(".entry-actions .primary").click()');await until('Boolean(document.querySelector(".line-number"))');assert.equal(parseInt(await evaluate('document.querySelector(".line-number").textContent')),saved.index+1);}
  console.log('MANUAL_SAVE_SURVIVES_TWO_RELOADS',saved.chapter.id,saved.index);await screenshot('media-restored-save');
  await evaluate('localStorage.removeItem("terra-manual-save")');assert.equal(errors.length,0);console.log('ERRORS',errors);await send('Browser.close').catch(()=>{});

@@ -1,0 +1,3 @@
+"use client";
+const NAMES=["阿米娅","凯尔希","佩丽卡","男管理员","女管理员"];
+export default function ReadingVoiceSettings({voices,selected,onSelect}:any){return <section><p className="muted">选择用于全部剧情台词和旁白的朗读声音。</p><div className="reading-modes" role="group" aria-label="朗读音色">{NAMES.map(name=>{const voice=voices.find((v:any)=>v.speaker===name&&!v.kind);return <button key={name} disabled={!voice} className={selected?.id===voice?.id&&voice?"selected":""} aria-pressed={!!voice&&selected?.id===voice.id} onClick={()=>onSelect(voice)}><b>{name}</b><span>{voice?(selected?.id===voice.id?"正在使用":"选择此音色"):"音色准备中"}</span></button>;})}</div></section>;}

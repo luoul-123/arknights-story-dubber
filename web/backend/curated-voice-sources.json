@@ -1,0 +1,470 @@
+[
+  {
+    "speaker": "阿米娅",
+    "gender": "female",
+    "characterId": "char_002_amiya",
+    "clips": [
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_001.mp3",
+        "text": "博士，您工作辛苦了。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_002.mp3",
+        "text": "凯尔希医生教导过我，工作的时候一定要保持全神贯注……嗯，全神贯注。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_003.mp3",
+        "text": "罗德岛全舰正处于通常航行状态。博士，整理下航程信息吧？",
+        "reference": true
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_004.mp3",
+        "text": "作为罗德岛的领导者我还有很多不成熟的地方，希望您能更多地为我指明前进的方向。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_005.mp3",
+        "text": "虽然这可能是我一厢情愿的想法，但我希望罗德岛能成为大家的第二个故乡……"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_006.mp3",
+        "text": "我们失去了很多才走到今天。有时候我会问自己，这一切真的值得么……？"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_007.mp3",
+        "text": "有时候，我会想起寒冷的家乡，那里就连空气中都弥漫着铜锈的味道。相比之下罗德岛是如此的温暖。所以，为了守护好这里，我必须更加努力才行。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_008.mp3",
+        "text": "嘿嘿，博士，悄悄告诉你一件事——我重新开始练小提琴了。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_009.mp3",
+        "text": "博士，我们的脚下，是一条漫长的道路……也许这是一次没有终点的旅行，但如果是和您一起，我觉得，非常幸福。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_010.mp3",
+        "text": "博士，您还有许多事情需要处理。现在还不能休息哦。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_011.mp3",
+        "text": "博士，能再见到您……真是太好了。今后我们同行的路还很长，所以，请您多多关照！"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_012.mp3",
+        "text": "原来是这样……博士，谢谢您！这些指导，真的很有帮助！"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_013.mp3",
+        "text": "能再一次和您并肩作战真是太好了，博士！"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_014.mp3",
+        "text": "那一天所看到的光景，想要呐喊却无法发出声音的绝望……希望能把这些，永远藏在记忆的最深处……"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_020.mp3",
+        "text": "来了！大家，请做好战斗准备！\n"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_029.mp3",
+        "text": "无论多么艰难的任务，只要有博士在，就一定能完成，我一直这样坚信着！"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_030.mp3",
+        "text": "即使是完美的胜利，大家也要保持警惕，不要太过放松哦！"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_031.mp3",
+        "text": "博士，辛苦了！累了的话请休息一会儿吧。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_033.mp3",
+        "text": "有什么想喝的吗，博士？"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_038.mp3",
+        "text": "新年快乐，博士！今天请您休息一下……抱、抱歉，您已经工作半天了吗？我是不是来晚了一点？刚刚煌把我叫去量身高了……您是在开玩笑啊，太好了。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_043.mp3",
+        "text": "博士，如果过去的那些记忆，您还能回想起一些的话……我真的很高兴。嗯，我的小提琴还不够熟练，但是……既然这里只有您能听到，我想试着演奏一下。一首有些怀旧的曲子。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_002_amiya/cn_044.mp3",
+        "text": "那些离去者的名字，我都记得，那些战场上的恐惧、愤怒和痛苦，我也仍然能触摸到余音。但要在大家面前演讲的话，我更想说些心怀希望的故事。博士，我有点紧张……可以握住我的手吗？"
+      }
+    ]
+  },
+  {
+    "speaker": "凯尔希",
+    "gender": "female",
+    "characterId": "char_003_kalts",
+    "clips": [
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_001.mp3",
+        "text": "博士，请坐。别紧张，我只是来查看你的身体状况。如果有任何异常，请务必详实报告给我。有什么意义？对罗德岛暂且不提，对我，则是有着相当重要的意义。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_002.mp3",
+        "text": "我会定期为你进行理学检查，记录你的生命征象与意识状态，其他人没有这个权限。任何人想对你进行进一步的检查，你都有权拒绝，明白吗？"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_003.mp3",
+        "text": "罗德岛的核心部门是医疗部门，理论研究与实践救治都需要医学人才，外勤行动所需的医护人员也在不断增加，请记住，之后的时间里，你需要招募更多的医疗干员。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_004.mp3",
+        "text": "你每天都会接触很多干员，与他们交谈时，你必须警惕那些试图影响你意志的话语。保持你的自我，必要时，建议你向我求助。当然，你的话……你是不需要我的，对吗？"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_005.mp3",
+        "text": "阿米娅去参加年轻干员们的聚餐了，她也是个孩子，你也该多陪陪她。大地不因年龄而仁慈半点，但孩子总是我们不变的希望，我很欣赏……某人的这个想法。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_006.mp3",
+        "text": "你会质疑自己存在的意义吗，博士？我会。大地上的生命十分顽强，它们在演化有着自己的位置，后天的驯化与对抗往往只是徒劳。我们的归宿会在何方，博士？你会有自己的答案，我只能这样坚持。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_007.mp3",
+        "text": "不用太担心我的事情，罗德岛不应当脆弱到离开了某人就无法前行。嗯？只是个稍显偏激的例子而已。不管怎么说，感谢你的关心，博士。比起我自己，我更关心你。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_008.mp3",
+        "text": "阿米娅成长为罗德岛的领袖的路途十分坎坷，我们所经历的牺牲都是证明。那段过去，你已经窥见了一丝半点，你会慢慢理解这一切的意义。你会做出自己的选择……有人这么对我说过。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_009.mp3",
+        "text": "我的愿望？我的愿望就是守护好你和阿米娅的愿望，博士，我立下的誓言我永远不会背弃。尽管我们对守护的定义各不相同，但我会站在这里，直到最后。我们无法忘怀过去，但你会有不一样的未来。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_010.mp3",
+        "text": "你醒了吗，还是还在梦中？"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_011.mp3",
+        "text": "博士，我出现在这里，说明局势不容乐观。你需要专心……继续完成你的使命。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_013.mp3",
+        "text": "越是强大越是脆弱，这就是万物的道理。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_014.mp3",
+        "text": "Mon3tr和我会保护所有人的，特别是博士你。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_018.mp3",
+        "text": "现在你只需要安心制定行动计划。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_020.mp3",
+        "text": "准备好作战计划了吗？迎敌。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_029.mp3",
+        "text": "整理好这次作战的录像记录，储存进档案库中。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_030.mp3",
+        "text": "Mon3tr，采集好我需要的组织样本。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_031.mp3",
+        "text": "评估一下逃亡人员的危险系数，以及敌军再突袭的可能性。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_033.mp3",
+        "text": "这里的基础设施完成得怎么样了？"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_036.mp3",
+        "text": "你似乎更加适应自己的工作和职责了，更像一个领导者了。",
+        "reference": true
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_038.mp3",
+        "text": "新年到了。希望你能以适当的方式合理度过这个短暂的假期。并且祝愿你能健康度过这一年，不要在医务室浪费太多时间。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_043.mp3",
+        "text": "这是你选择的日子，对吗？我不会询问你这个日子的特殊意义，你可以保留这个答案。我只是希望，你的选择可以让此处的存在具备意义。当然，如果你愿意的话，我也会为你送上祝福。生日快乐。"
+      },
+      {
+        "source": "https://raw.githubusercontent.com/ArknightsAssets/ArknightsAssets2/voice/assets/dyn/audio/sound_beta_2/voice_cn/char_003_kalts/cn_044.mp3",
+        "text": "罗德岛所承载的意义，不该由任何人来告诉你，也不该被无法触及的回忆束缚，而是需要现在的你自己找到答案。终有一天，你会决定罗德岛的航向。相信你做出的选择，会为我们谈论过的理想负责。"
+      }
+    ]
+  },
+  {
+    "speaker": "佩丽卡",
+    "gender": "female",
+    "characterId": "chr_0004_pelica",
+    "clips": [
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrbark_squad_01.mp3",
+        "text": "全员待命，随时可以出发。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrbark_squad_02.mp3",
+        "text": "终末地危机处理小组已就绪。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrbark_join_01.mp3",
+        "text": "指挥权限暂时交给你了，管理员。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrbark_join_02.mp3",
+        "text": "带领我们更进一步吧，管理员。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrbark_weap_01.mp3",
+        "text": "该研究一下适合这件武器的作战方式了。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrbark_gear_01.mp3",
+        "text": "这也是集成工业系统的成果。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrup_skill_01.mp3",
+        "text": "只需略微调校……这便于取得更多战果。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrup_level_01.mp3",
+        "text": "我们曾这样不断抵抗……期待着你能再一次归来。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrup_promt01_01.mp3",
+        "text": "感谢你的认可，管理员。我会继续努力的。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrup_promt02_01.mp3",
+        "text": "作为监督，我还有很多不成熟的地方，但我已经下定了决心，责无旁贷。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrup_promt03_01.mp3",
+        "text": "你又一次选择了信任我……管理员。我绝对不会辜负你的期待。",
+        "reference": true
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_chrup_promt04_01.mp3",
+        "text": "没什么，只是得到你的夸赞……让我有些怀念过去。那曾是我努力的唯一理由，而现在，我很庆幸能够带领着终末地，站在你的身旁。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_introduce_01.mp3",
+        "text": "我一直坚信，你会再一次为我们指明前进的方向。欢迎回归终末地，管理员。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_mono_switch_02.mp3",
+        "text": "干员佩丽卡，待命中。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_assign_work_01.mp3",
+        "text": "高效的规划，我会努力的。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_hello_lower_01.mp3",
+        "text": "适应得还好吗，管理员？"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_hello_max_01.mp3",
+        "text": "管理员，注意休息，不要勉强自己。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_talk_lv01_01.mp3",
+        "text": "自从管理员醒来以后，帝江号每天都在变得更有活力……我很期待未来的日子，管理员。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_talk_lv02_01.mp3",
+        "text": "管理员，你的气色好多了。如果还有什么需要，可以随时找我。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_talk_lv02_02.mp3",
+        "text": "管理员，你的需求是最优先的。我可以把其他事情先放下……或是交给菲奥娜去办。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_talk_max_01.mp3",
+        "text": "中央环厅总是这么繁忙，这意味着一种责任。百余年来，一代又一代的终末地干员都在为复兴文明环带而努力。也许有一天，帝江号会落回到地上，在我们亲手建设的乐土中小憩片刻吧。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_talk_max_02.mp3",
+        "text": "有很多干员并不会停留在帝江号，特别是精英干员们。比起逗留在天空之上的安全地带，危机四伏的文明环带更需要他们。没关系，你们迟早会见面的。到时候，我会好好向管理员介绍大家。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_talk_max_03.mp3",
+        "text": "曾经我们在帝江号上这样交谈的时候，我还是个只有现在一半高的孩子。如今物换星移，我长大了，帝江号也有许多变化，管理员你却……依旧如初。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_gift_give_01.mp3",
+        "text": "管理员，我为你申请了一些补给，应该能帮上你的忙。你有时候太过努力了，但其实，依赖一下我和终末地也没什么不好。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_sim_gift_recv_01.mp3",
+        "text": "非常感谢，管理员，我一定会珍惜的。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0004_pelica/chr_0004_pelica_mono_self_line01.mp3",
+        "text": "管理员，你需要定期检查身体，别太勉强自己。特别是，不要太滥用自己的源石技艺——如果还有干员请你维修Delta型机器人……请拒绝！"
+      }
+    ]
+  },
+  {
+    "speaker": "男管理员",
+    "gender": "male",
+    "characterId": "chr_0002_endminm",
+    "clips": [
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrbark_squad_01.mp3",
+        "text": "源石在歌唱。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrbark_squad_02.mp3",
+        "text": "终末地一定会继续前行。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrbark_join_01.mp3",
+        "text": "帝江号，我已就位。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrbark_gear_01.mp3",
+        "text": "这就是工业的成果。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrup_skill_01.mp3",
+        "text": "熟悉的感觉……"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrup_level_01.mp3",
+        "text": "我不会再忘记他们的身影。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrup_promt02_01.mp3",
+        "text": "我会保护终末地的。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrup_promt03_01.mp3",
+        "text": "过去和现在……必须合二为一。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrup_promt04_01.mp3",
+        "text": "我听见了她的声音，像是梦中的呢喃。我常在梦中遇见一片无垠的海，令人悲伤，令人怀念……也让我再一次下定决心。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_mono_switch_01.mp3",
+        "text": "还在等什么吗？"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_mono_switch_02.mp3",
+        "text": "源石会开辟道路。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_explore_point_common_01.mp3",
+        "text": "那边是……"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_explore_point_valub_01.mp3",
+        "text": "那儿有很重要的东西！"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_explore_find_locked_01.mp3",
+        "text": "附近有需要调查的区域。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_explore_find_danger_01.mp3",
+        "text": "是强敌，谨慎应对。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_interact_mine_valub_01.mp3",
+        "text": "这些矿物能派上用场。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_interact_etherium_01.mp3",
+        "text": "熟悉的触感。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0002_endminm/chr_0002_endminm_chrup_promt04_01.mp3#first-sentence",
+        "text": "我听见了她的声音，像是梦中的呢喃。",
+        "reference": true,
+        "referenceOnly": true,
+        "trimSeconds": 5.2
+      }
+    ]
+  },
+  {
+    "speaker": "女管理员",
+    "gender": "female",
+    "characterId": "chr_0003_endminf",
+    "clips": [
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrbark_squad_01.mp3",
+        "text": "源石在歌唱。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrbark_squad_02.mp3",
+        "text": "终末地一定会继续前行。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrbark_join_01.mp3",
+        "text": "帝江号，我已就位。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrbark_gear_01.mp3",
+        "text": "这就是工业的成果。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrup_skill_01.mp3",
+        "text": "熟悉的感觉……"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrup_level_01.mp3",
+        "text": "我不会再忘记他们的身影。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrup_promt02_01.mp3",
+        "text": "我会保护终末地的。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrup_promt03_01.mp3",
+        "text": "过去和现在……必须合二为一。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrup_promt04_01.mp3",
+        "text": "我听见了她的声音，像是梦中的呢喃。我常在梦中遇见一片无垠的海，令人悲伤，令人怀念……也让我再一次下定决心。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_mono_switch_01.mp3",
+        "text": "还在等什么吗？"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_mono_switch_02.mp3",
+        "text": "源石会开辟道路。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_explore_point_valub_01.mp3",
+        "text": "那儿有很重要的东西！"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_explore_find_locked_01.mp3",
+        "text": "附近有需要调查的区域。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_explore_find_danger_01.mp3",
+        "text": "是强敌，谨慎应对。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_interact_mine_valub_01.mp3",
+        "text": "这些矿物能派上用场。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_interact_etherium_01.mp3",
+        "text": "熟悉的触感。"
+      },
+      {
+        "source": "https://static.warfarin.wiki/v3/audio/cn/char/chr_0003_endminf/chr_0003_endminf_chrup_promt04_01.mp3#first-sentence",
+        "text": "我听见了她的声音，像是梦中的呢喃。",
+        "reference": true,
+        "referenceOnly": true,
+        "trimSeconds": 5.2
+      }
+    ]
+  }
+]

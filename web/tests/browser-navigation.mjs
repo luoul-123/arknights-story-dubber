@@ -16,6 +16,7 @@ try{
  socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const [r,j]=pending.get(m.id)||[];pending.delete(m.id);if(m.error)j?.(Error(JSON.stringify(m.error)));else r?.(m.result);}if(m.method==="Runtime.exceptionThrown")errors.push(m.params.exceptionDetails.text);};
  const send=(method,params={})=>new Promise((r,j)=>{const id=++seq;pending.set(id,[r,j]);socket.send(JSON.stringify({id,method,params}));});
  const evaluate=async expression=>{const r=await send("Runtime.evaluate",{expression,userGesture:true,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.text);return r.result.value;};
+ const nextLine=async()=>{if(await evaluate('document.querySelector(".dialogue-text")?.getAttribute("aria-label")==="显示完整台词"')){await evaluate('document.querySelector(".dialogue-text").click()');await pause(60);}await evaluate('document.querySelector(".dialogue-text").click()');};
  const screenshot=async name=>{const r=await send("Page.captureScreenshot",{format:"png"});await fs.writeFile(path.join(root,"work",name+".png"),Buffer.from(r.data,"base64"));};
 
  await send("Page.enable");await send("Runtime.enable");
@@ -31,7 +32,7 @@ try{
  await evaluate('document.querySelector(".listen-toggle").click()');
  await until('window.__lastAudio && !window.__lastAudio.paused && window.__lastAudio.currentTime>0.2');
  const snapshot=()=>evaluate('({line:document.querySelector(".line-number")?.textContent,plays:window.__audioPlays,paused:window.__lastAudio.paused,time:window.__lastAudio.currentTime,src:window.__lastAudio.src,media:navigator.mediaSession.playbackState})');
- for(const label of ["章节目录","音色工作室","阅读设置"]){
+ for(const label of ["章节目录","朗读音色设置","阅读设置"]){
    const before=await snapshot();
    await evaluate('document.querySelector('+JSON.stringify('button[aria-label="'+label+'"]')+').click()');await pause(150);
    const after=await snapshot();assert.equal(after.paused,false,label+" must keep playing");
@@ -58,7 +59,7 @@ try{
  await evaluate('localStorage.setItem("zhousheng-progress",JSON.stringify({chapter:{id:"obt/main/level_main_00-01_end",title:"坍塌",code:"0-1",tag:"行动后"},index:'+String(chapterData.steps.length-1)+',choice:"1",decisions:{}}));location.reload()');
  await until('Boolean(document.querySelector(".entry-actions .text-button"))');
  await evaluate('document.querySelector(".entry-actions .text-button").click()');await until('Boolean(document.querySelector(".dialogue-shell"))');
- await evaluate('document.querySelector(".listen-toggle").click();document.querySelector("button[aria-label=立即跳过当前句]").click()');await until('Boolean(document.querySelector(".chapter-complete"))');
+ await evaluate('document.querySelector(".listen-toggle").click()');await nextLine();await until('Boolean(document.querySelector(".chapter-complete"))');
  const endText=await evaluate('document.querySelector(".chapter-complete").innerText');assert.ok(endText.includes("0-2"));await pause(1200);assert.equal(await evaluate('Boolean(document.querySelector(".chapter-complete"))'),true);console.log("NEXT_CONFIRMATION",endText);await screenshot("next-section-confirmation");
  await evaluate('document.querySelector("button[aria-label=章节目录]").click()');assert.ok(await evaluate('Boolean(document.querySelector("button[aria-label=确认进入下一段]"))'));
  await evaluate('document.querySelector("button[aria-label=确认进入下一段]").click()');await until('Boolean(document.querySelector(".dialogue-shell")) && document.querySelector(".chapter-heading").textContent.includes("0-2")');console.log("NEXT_SECTION_LOADED",await evaluate('document.querySelector(".chapter-heading").textContent'));

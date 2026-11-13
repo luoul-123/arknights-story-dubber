@@ -32,6 +32,7 @@ from catalog_metadata import CatalogMetadata
 CATALOG_METADATA = CatalogMetadata(DATA)
 from default_voices import read_defaults, save_defaults, defaults_version, selected_default
 import reader_voice
+import speech_queue
 from media_source import MediaSource
 MEDIA=MediaSource(DATA/"media")
 
@@ -266,6 +267,7 @@ def render_reference(ident,text,models,reference,identity,language="zh"):
     target.parent.mkdir(exist_ok=True)
     if target.exists(): return target.read_bytes()
     with GPU:
+        speech_queue.check_current()
         if target.exists(): return target.read_bytes()
         start_engine()
         if LOADED != models:
@@ -379,7 +381,9 @@ class Handler(BaseHTTPRequestHandler):
             if path in ("admin/transcribe","admin/train"):return self.reply(queue_job(path.split("/")[1],data["id"],int(data.get("epochs",2))),202)
             if path=="admin/publish":return self.reply(publish(data["id"], data.get("mode","reference")))
             if path=="admin/preview":return self.reply(synthesize(data["id"],data.get("text",""),preview=True, mode=data.get("mode","reference")))
-            if path=="speech":return self.reply(synthesize(data["voiceId"],data.get("text",""),data.get("version"),speaker=data.get("speaker",""),reader=reader))
+            if path=="speech":
+                speech_queue.register(reader,data.get("streamId"),data.get("sequence",0))
+                return self.reply(synthesize(data["voiceId"],data.get("text",""),data.get("version"),speaker=data.get("speaker",""),reader=reader))
             return self.reply({"error":"接口不存在"},404)
         except (ValueError,KeyError,json.JSONDecodeError) as e:self.reply({"error":str(e)},400)
         except Exception as e:self.reply({"error":str(e)},500)

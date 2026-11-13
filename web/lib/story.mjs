@@ -107,3 +107,9 @@ export function nextChapter(groups,currentId){
  const siblings=groups.filter(g=>g.category===group.category).sort((a,b)=>(a.releasedAt||Infinity)-(b.releasedAt||Infinity)||a.groupSort-b.groupSort);
  return siblings[siblings.findIndex(g=>g.id===group.id)+1]?.chapters[0]||null;
 }
+
+export function previousStep(steps,index,decisions={}){
+ let choice=null,previous=null;
+ for(let i=0;i<Math.min(index,steps.length);i++){const step=steps[i];if(step.route&&!step.route.includes(choice))continue;previous={index:i,step,choice};if(step.type==='choice')choice=decisions[step.id]??choice;}
+ return previous;
+}

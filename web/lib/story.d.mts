@@ -12,3 +12,5 @@ export function releaseDate(timestamp:number|null):string;
 export function timelineFrom(groups:any[]):any[];
 
 export function nextChapter(groups:any[],currentId:string):any|null;
+
+export function previousStep(steps:any[],index:number,decisions?:Record<string,string>):{index:number;step:any;choice:string|null}|null;

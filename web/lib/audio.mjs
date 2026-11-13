@@ -1,14 +1,14 @@
 // Last selection wins, even if an older synthesis request completes late.
 export class DialogueAudio {
- constructor({fetcher=(...args)=>globalThis.fetch(...args),makeAudio=()=>new Audio(),onState=()=>{}}={}){
-  this.fetcher=fetcher;this.makeAudio=makeAudio;this.onState=onState;this.generation=0;this.cache=new Map();this.pending=new Map();this.current=null;this.element=null;this.paused=false;this.volume=1;this.rate=1;
+ constructor({debounceMs=220,fetcher=(...args)=>globalThis.fetch(...args),makeAudio=()=>new Audio(),onState=()=>{}}={}){
+  this.debounceMs=debounceMs;this.streamId=globalThis.crypto?.randomUUID?.()||String(Math.random());this.fetcher=fetcher;this.makeAudio=makeAudio;this.onState=onState;this.generation=0;this.cache=new Map();this.pending=new Map();this.current=null;this.element=null;this.paused=false;this.volume=1;this.rate=1;
  }
  stop(){this.paused=false;this.generation++;if(this.current){this.current.pause();this.current.removeAttribute?.("src");this.current.load?.();this.current=null;}this.controller?.abort();this.onState("idle");}
  key(line,voice){return [line.text,line.speaker,voice?.id,voice?.version].join("|");}
  async load(line,voice,signal){
   const key=this.key(line,voice);
   if(this.cache.has(key))return this.cache.get(key);
-  const response=await this.fetcher("/api/voice/speech",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:line.text,speaker:line.speaker||"",voiceId:voice.id,version:voice.version}),signal});
+  const response=await this.fetcher("/api/voice/speech",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({text:line.text,speaker:line.speaker||"",voiceId:voice.id,version:voice.version,streamId:this.streamId,sequence:this.generation}),signal});
   if(!response.ok){const j=await response.json().catch(()=>({}));throw Error(j.error||"配音生成失败");}
   const url=URL.createObjectURL(await response.blob());this.cache.set(key,url);
   if(this.cache.size>24){const first=this.cache.keys().next().value;if(first!==key){URL.revokeObjectURL(this.cache.get(first));this.cache.delete(first);}}
@@ -18,6 +18,7 @@ export class DialogueAudio {
  async play(line,voice,{volume=this.volume,rate=this.rate,onEnd=()=>{}}={}){
   this.setOptions({volume,rate});this.stop();const generation=this.generation;this.controller=new AbortController();this.onState("loading");
   try{
+   if(this.debounceMs)await new Promise(resolve=>setTimeout(resolve,this.debounceMs));if(generation!==this.generation)return;
    const url=await this.load(line,voice,this.controller.signal);if(generation!==this.generation)return;
    const audio=this.element||(this.element=this.makeAudio());this.current=audio;audio.src=url;audio.volume=this.volume;audio.playbackRate=this.rate;
    audio.onended=()=>{if(generation===this.generation){this.onState("ended");onEnd();}};

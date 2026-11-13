@@ -16,10 +16,13 @@ try{
  socket.onmessage=e=>{const m=JSON.parse(e.data);if(m.id){const [r,j]=pending.get(m.id)||[];pending.delete(m.id);if(m.error)j?.(Error(JSON.stringify(m.error)));else r?.(m.result);}if(m.method==="Runtime.exceptionThrown")errors.push(m.params.exceptionDetails.text);};
  const send=(method,params={})=>new Promise((r,j)=>{const id=++seq;pending.set(id,[r,j]);socket.send(JSON.stringify({id,method,params}));});
  const evaluate=async expression=>{const r=await send("Runtime.evaluate",{expression,userGesture:true,awaitPromise:true,returnByValue:true});if(r.exceptionDetails)throw Error(r.exceptionDetails.text);return r.result.value;};
+ const nextLine=async()=>{if(await evaluate('document.querySelector(".dialogue-text")?.getAttribute("aria-label")==="显示完整台词"')){await evaluate('document.querySelector(".dialogue-text").click()');await pause(60);}await evaluate('document.querySelector(".dialogue-text").click()');};
  const screenshot=async name=>{const r=await send("Page.captureScreenshot",{format:"png"});await fs.writeFile(path.join(root,"work",name+".png"),Buffer.from(r.data,"base64"));};
  await send("Page.enable");await send("Runtime.enable");
  await send("Emulation.setDeviceMetricsOverride",{width:1440,height:960,deviceScaleFactor:1,mobile:false});
  await send("Page.navigate",{url:"http://127.0.0.1:5173/signin-with-chatgpt?return_to=/"});
+ for(let i=0;i<45;i++){await pause(1000);if(await evaluate('Boolean(document.querySelector(".entry-actions .primary"))'))break;}
+ await evaluate('localStorage.removeItem("terra-manual-save");localStorage.removeItem("zhousheng-progress");localStorage.removeItem("terra-preset-voice");location.reload()');
  for(let i=0;i<45;i++){await pause(1000);if(await evaluate('Boolean(document.querySelector(".entry-actions .primary"))'))break;}
  console.log("STATUS",JSON.stringify(await evaluate('({title:document.title,text:document.body.innerText.slice(0,350),overflow:document.documentElement.scrollWidth>innerWidth})')));
  await screenshot("desktop-entry");
@@ -29,7 +32,7 @@ try{
  await evaluate('document.querySelector(".entry-actions .primary").click()');await pause(2500);
  await screenshot("desktop-dialogue");
  const initial=await evaluate('document.querySelector(".line-number")?.textContent');
- await evaluate('document.querySelector("button[aria-label=立即跳过当前句]").click()');await pause(200);await evaluate('document.querySelector("button[aria-label=立即跳过当前句]").click()');await pause(2500);
+ await nextLine();await pause(200);await nextLine();await pause(2500);
  console.log("ADVANCE",JSON.stringify({initial,next:await evaluate('document.querySelector(".line-number")?.textContent'),cg:await evaluate('Boolean(document.querySelector(".cg"))')}));
  await screenshot("desktop-cg");
  await evaluate('document.querySelector(".listen-toggle").click()');
@@ -41,11 +44,11 @@ try{
  await evaluate('document.querySelector(".auto-button").click()');const pausedLine=await evaluate('document.querySelector(".line-number").textContent');await pause(2200);
  const paused=await evaluate('({line:document.querySelector(".line-number").textContent,media:navigator.mediaSession.playbackState})');assert.equal(paused.line,pausedLine);assert.equal(paused.media,"paused");console.log("PAUSED",JSON.stringify(paused));
  await evaluate('document.querySelector(".auto-button").click()');await pause(150);assert.equal(await evaluate('navigator.mediaSession.playbackState'),"playing");
- await evaluate('document.querySelector("button[aria-label=立即跳过当前句]").click()');await pause(200);assert.ok(parseInt(await evaluate('document.querySelector(".line-number").textContent'))>parseInt(pausedLine));
+ await nextLine();await pause(200);assert.ok(parseInt(await evaluate('document.querySelector(".line-number").textContent'))>parseInt(pausedLine));
  await screenshot("desktop-listening");await evaluate('document.querySelector(".listen-toggle").click()');
 
- await evaluate('document.querySelector("button[aria-label=音色工作室]").click()');await pause(1000);
- console.log("STUDIO",await evaluate('document.querySelector(".studio")?.innerText.slice(0,600)'));await screenshot("desktop-studio");
+ await evaluate('document.querySelector("button[aria-label=朗读音色设置]").click()');await pause(1000);
+ console.log("STUDIO",await evaluate('document.querySelector(".studio-drawer")?.innerText.slice(0,600)'));await screenshot("desktop-studio");
  await evaluate('document.querySelector("button[aria-label=关闭面板]").click()');
  await send("Emulation.setDeviceMetricsOverride",{width:390,height:844,deviceScaleFactor:1,mobile:true});await pause(800);await screenshot("mobile-dialogue");
  console.log("MOBILE",JSON.stringify(await evaluate('({overflow:document.documentElement.scrollWidth>innerWidth,width:innerWidth})')));
