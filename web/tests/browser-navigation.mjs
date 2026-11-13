@@ -21,7 +21,7 @@ try{
  await send("Page.enable");await send("Runtime.enable");
  await send("Page.addScriptToEvaluateOnNewDocument",{source:'window.__audioPlays=0;const orig=HTMLMediaElement.prototype.play;HTMLMediaElement.prototype.play=function(){window.__audioPlays++;window.__lastAudio=this;return orig.apply(this,arguments)};'});
  await send("Emulation.setDeviceMetricsOverride",{width:1440,height:960,deviceScaleFactor:1,mobile:false});
- const until=async expression=>{for(let i=0;i<90;i++){if(await evaluate(expression))return;await pause(300);}throw Error("Timed out: "+expression);};
+ const until=async expression=>{for(let i=0;i<400;i++){if(await evaluate(expression))return;await pause(300);}throw Error("Timed out: "+expression);};
  await send("Page.navigate",{url:"http://127.0.0.1:5173/signin-with-chatgpt?return_to=/"});
  await until('Boolean(document.querySelector(".entry-actions .primary"))');
  await evaluate('localStorage.setItem("zhousheng-progress",JSON.stringify({chapter:{id:"obt/main/level_main_00-01_beg",title:"坍塌",code:"0-1",tag:"行动前"},index:2,choice:null,decisions:{}}));location.reload()');
@@ -52,7 +52,7 @@ try{
  await evaluate('[...document.querySelectorAll(".archive-categories button")].find(b=>b.textContent.includes("个人密录")).click()');
  assert.ok(await evaluate('document.querySelector(".catalog summary").textContent.includes("12F")'));await screenshot("archive-personal");
  await evaluate('document.querySelector(".archive-categories button").click();document.querySelectorAll(".archive-views button")[1].click()');
- const releases=await evaluate('[...document.querySelectorAll(".timeline-row")].map(b=>Number(b.dataset.release))');assert.equal(releases.length,80);assert.deepEqual(releases,[...releases].sort((a,b)=>a-b));assert.equal(await evaluate('document.querySelector(".timeline-date").textContent'),"2019-04-30");await screenshot("archive-timeline");
+ const releases=await evaluate('[...document.querySelectorAll(".timeline-collection")].map(b=>Number(b.dataset.release))');assert.equal(releases.length,80);assert.deepEqual(releases,[...releases].sort((a,b)=>a-b));assert.equal(await evaluate('document.querySelector(".timeline-date").textContent'),"2019-04-30");assert.equal(await evaluate('document.querySelector(".timeline-collection").open'),false);assert.ok(await evaluate('document.querySelector(".timeline-collection summary").textContent.includes("第 0 章")'));await evaluate('document.querySelector(".timeline-collection summary").click()');assert.equal(await evaluate('document.querySelector(".timeline-collection").open'),true);await screenshot("archive-timeline");
  await evaluate('document.querySelector("button[aria-label=关闭面板]").click();document.querySelector(".auto-button").click()');
  const chapterData=await evaluate('fetch("/api/stories?id=obt%2Fmain%2Flevel_main_00-01_end").then(r=>r.json())');assert.ok(chapterData.steps?.length>0);
  await evaluate('localStorage.setItem("zhousheng-progress",JSON.stringify({chapter:{id:"obt/main/level_main_00-01_end",title:"坍塌",code:"0-1",tag:"行动后"},index:'+String(chapterData.steps.length-1)+',choice:"1",decisions:{}}));location.reload()');

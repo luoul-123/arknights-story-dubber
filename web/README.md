@@ -68,3 +68,5 @@ work/ 中的研究样本、截图、.voice-data/、.dev.vars、录音和模型�
 ## 站点默认模型
 
 专属干员仍优先使用参考音色；全站通用女声、男声、旁白当前也使用共享基础模型 + 参考录音。已有训练模型保留为管理员可选项，不参与当前默认播放。当前本机素材及训练记录见 [default-voices.md](docs/default-voices.md)，不会随源码分发。
+
+纯标点台词保留显示并播放半秒停顿；英文前处理数据可通过 ../.venv/Scripts/python.exe backend/setup_text_resources.py 补齐。时间线按章节 / 活动合集展示，展开后选择具体段落。

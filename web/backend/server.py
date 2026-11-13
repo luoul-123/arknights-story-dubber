@@ -236,6 +236,11 @@ def synthesize(ident, text, version=None, preview=False, mode="reference", speak
     global LOADED
     text = str(text).strip()
     if not text or len(text) > 600: raise ValueError("台词长度需要在 1–600 字之间")
+    if not any(ch.isalnum() for ch in text):
+        output=io.BytesIO()
+        with wave.open(output,"wb") as sound:
+            sound.setnchannels(1);sound.setsampwidth(2);sound.setframerate(32000);sound.writeframes(bytes(32000))
+        return output.getvalue()
     if ident in ("__narrator","__npc"):return default_speech(text,ident,speaker)
     if ident=="__reader":
         reference=reader_voice.reference_for(DATA,reader,version)

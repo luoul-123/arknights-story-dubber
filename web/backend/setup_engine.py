@@ -93,6 +93,8 @@ def main():
     shutil.copy2(imageio_ffmpeg.get_ffmpeg_exe(),portable/'ffmpeg.exe')
     print('准备中文多音字模型',flush=True)
     subprocess.run([str(py),'GPT_SoVITS/download.py'],cwd=engine,check=True)
+    from setup_text_resources import install
+    install()
     print('检查 GPU 和语音依赖',flush=True)
     run(py,'-c','import torch,librosa,transformers,resampy; import numpy as np; librosa.resample(np.zeros(48000,dtype=np.float32),orig_sr=48000,target_sr=16000,res_type="kaiser_fast"); print(torch.__version__, torch.cuda.is_available()); assert torch.cuda.is_available(), "GPU unavailable"')
     print('网页配音、转写和可选训练引擎已就绪',flush=True)
