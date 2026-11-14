@@ -94,7 +94,7 @@ export default function Theater(){
   const api=(window as Window & {documentPictureInPicture?:DocumentPictureInPictureApi}).documentPictureInPicture;
   if(!api){setToast("当前浏览器不支持悬浮桌宠，随身听仍可使用");return;}
   if(petWindowRef.current&&!petWindowRef.current.closed){petWindowRef.current.focus();return;}
-  void api.requestWindow({width:252,height:305}).then(pip=>{
+  void api.requestWindow({width:320,height:420}).then(pip=>{
    if(!listeningRef.current){pip.close();return;}
    pip.document.title="凯尔希 · 泰拉之声";
    petWindowRef.current=pip;
@@ -116,7 +116,7 @@ export default function Theater(){
    <div className="scene-grain"/><div className="vignette"/>
   </div>
   <header className="topbar">
-   <button className="brand" onClick={()=>openDrawer("chapters")}><span className="brand-mark"><Triangle size={23}/><span/></span><b>泰拉之声</b><span className="brand-en">VOICE OF TERRA</span></button>
+   <button className="brand" onClick={()=>openDrawer("chapters")}><b>泰拉之声</b><span className="brand-en">VOICE OF TERRA</span></button>
    <div className="chapter-heading"><span>{catalog.find(g=>g.chapters.some(c=>c.id===chapter.id))?.title||"剧情档案"}</span><span className="divider"/><b>{chapter.code} · {chapter.title}</b><span className="tag">{chapter.tag}</span></div>
    <div className="top-actions"><button className={"listen-toggle "+(listening?"active":"")} onClick={toggleListening} disabled={!isVoicedChapter(chapter.id)} title={isVoicedChapter(chapter.id)?"收听有声剧情":"本章仅支持阅读"}><Headphones size={16}/><span>{listening?"随身听中":"随身听"}</span></button>{listening&&"documentPictureInPicture" in window&&<IconButton label="打开凯尔希悬浮桌宠" onClick={openPet}><PictureInPicture2 size={18}/></IconButton>}<a className="icon-button" aria-label="GitHub 项目" href="https://github.com/luoul-123/voice-of-terra-for-arknights" target="_blank" rel="noreferrer"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.4 3.5 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.7 4.7 0 0 1 1.2 3.2c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg></a><IconButton label="章节目录" onClick={()=>openDrawer("chapters")}><BookOpen size={19}/></IconButton><IconButton label="阅读设置" onClick={()=>openDrawer("settings")}><Settings2 size={19}/></IconButton></div>
   </header>

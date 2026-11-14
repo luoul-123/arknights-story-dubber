@@ -67,3 +67,10 @@
 .theater[data-theme="light"] .entry-copy p,.theater[data-theme="light"] .entry-foot{color:#dee8dd}
 .theater[data-theme="light"] .entry-copy h1>span{color:#b6d1ac}
 .theater[data-theme="light"] .scene-meta{color:#d4e4d3b0}
+
+/* Give portraits more room on large displays and align their feet with the scene. */
+@media(min-width:1400px) and (min-height:800px){
+  .actors{inset:14% 12% -7%}
+  .actor{width:49%;height:100%;margin-top:0;object-position:center bottom}
+  .actor.solo{width:68%}
+}

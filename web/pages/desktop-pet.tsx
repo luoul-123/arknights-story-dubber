@@ -1,4 +1,5 @@
-import {Pause,Play,ExternalLink} from "lucide-react";
+import {useState} from "react";
+import {Pause,Play,ExternalLink,Headphones,ChevronUp,Gauge} from "lucide-react";
 
 type DesktopPetProps={
   chapter:string;
@@ -11,33 +12,40 @@ type DesktopPetProps={
 };
 
 const styles=`
-  :root{color-scheme:dark;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
+  :root{color-scheme:light;font-family:"Microsoft YaHei","PingFang SC",sans-serif}
   *{box-sizing:border-box}
   html,body,#pet-root{width:100%;height:100%;margin:0}
-  body{overflow:hidden;background:#101b1d;color:#eaf2e9}
+  body{overflow:hidden;background:#e8f0e5;color:#254239}
   button,input{font:inherit}
   button{cursor:pointer}
-  button:focus-visible,input:focus-visible{outline:2px solid #c6e5bd;outline-offset:2px}
-  .pet-shell{position:relative;width:100%;height:100%;min-height:230px;overflow:hidden;background:radial-gradient(circle at 50% 42%,#34514b 0,#182d2c 52%,#101b1d 100%)}
-  .pet-shell:before{content:"";position:absolute;inset:7px;border:1px solid #b9dab222;border-radius:13px;pointer-events:none}
-  .pet-heading{position:absolute;top:15px;left:18px;right:18px;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;font-size:10px;letter-spacing:.12em;color:#bcd5bd}
-  .pet-heading strong{font-size:11px;font-weight:600;color:#ecf5e8;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .pet-status{position:absolute;left:15px;right:15px;bottom:18px;z-index:2;text-align:center;font-size:11px;color:#dcead7;text-shadow:0 1px 8px #071311;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;transition:opacity .2s}
-  .pet-figure{position:absolute;top:27px;left:9px;width:calc(100% - 18px);height:calc(100% - 53px);object-fit:contain;filter:drop-shadow(0 8px 13px #071311aa)}
-  .pet-shell:hover .pet-status,.pet-shell:focus-within .pet-status{opacity:0}
-  .pet-controls{position:absolute;left:9px;right:9px;bottom:9px;z-index:3;padding:11px;border:1px solid #c6e7bf55;border-radius:10px;background:#0c1b1dec;box-shadow:0 8px 24px #0008;opacity:0;pointer-events:none;transform:translateY(8px);transition:opacity .2s,transform .2s}
-  .pet-shell:hover .pet-controls,.pet-shell:focus-within .pet-controls{opacity:1;pointer-events:auto;transform:translateY(0)}
-  .pet-controls .pet-line{font-size:10px;line-height:1.4;color:#bed5bc;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:0 0 8px}
-  .pet-actions{display:flex;align-items:center;gap:7px}
-  .pet-actions button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-height:32px;padding:5px 9px;border:1px solid #aecba852;border-radius:6px;background:#203832;color:#eaf5e7;font-size:11px;white-space:nowrap}
-  .pet-actions button:hover{background:#345747}
-  .pet-actions button:disabled{opacity:.5;cursor:not-allowed}
-  .pet-actions .pet-play{background:#c8e7bb;color:#19352c;border-color:#c8e7bb;font-weight:700}
-  .pet-actions .pet-play:hover{background:#def3d5}
-  .pet-actions .pet-return{margin-left:auto}
-  .pet-speed{display:flex;align-items:center;gap:7px;margin-top:8px;font-size:10px;color:#c5d9c3}
-  .pet-speed input{flex:1;min-width:0;accent-color:#c8e7bb}
-  .pet-speed b{min-width:28px;text-align:right;font-weight:600;color:#eaf5e7}
+  button:focus-visible,input:focus-visible{outline:2px solid #397d65;outline-offset:2px}
+  .pet-shell{display:grid;grid-template-rows:minmax(0,1fr) auto;width:100%;height:100%;min-height:300px;overflow:hidden;background:#e8f0e5}
+  .pet-stage{position:relative;display:flex;align-items:flex-end;justify-content:center;min-height:0;overflow:hidden;background:radial-gradient(ellipse at 50% 15%,#fffdf4 0,#f3f8eb 42%,transparent 73%),linear-gradient(180deg,#e7f2df 0%,#d9ebda 62%,#b5d1be 100%)}
+  .pet-stage:before{content:"";position:absolute;inset:auto -14% -37px;height:42%;border-radius:50% 50% 0 0;background:#8cafab55;transform:rotate(-7deg)}
+  .pet-stage:after{content:"";position:absolute;inset:auto -10% -55px;height:35%;border-radius:50% 50% 0 0;background:#7fb29b66;transform:rotate(8deg)}
+  .pet-heading{position:absolute;top:15px;left:17px;right:17px;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:8px;color:#32594c;font-size:10px;letter-spacing:.08em}
+  .pet-heading strong{font-size:12px;font-weight:650;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pet-heading span{font-size:10px;color:#587b6d}
+  .pet-stage picture{z-index:1;display:flex;align-items:flex-end;justify-content:center;width:100%;height:calc(100% - 37px);pointer-events:none}
+  .pet-figure{display:block;width:96%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 10px 9px #395a4844)}
+  .pet-dock{position:relative;z-index:3;display:grid;gap:8px;padding:12px 15px 15px;background:#f7fbf4ee;border-top:1px solid #fff;box-shadow:0 -8px 24px #638b7240}
+  .pet-now{display:flex;align-items:center;gap:6px;min-width:0;font-size:10px;color:#547263}
+  .pet-now svg{flex:none}
+  .pet-now strong{font-weight:600;white-space:nowrap}
+  .pet-line{margin:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#26493e;font-size:11px;line-height:1.45}
+  .pet-actions{display:flex;align-items:center;justify-content:center;gap:10px}
+  .pet-actions button{display:inline-flex;align-items:center;justify-content:center;gap:5px;min-width:37px;min-height:37px;padding:0 8px;border:1px solid #b9d0be;border-radius:999px;background:#e9f1e8;color:#365f4c;transition:transform .15s,background .15s}
+  .pet-actions button:hover{background:#dbead9;transform:translateY(-1px)}
+  .pet-actions button:disabled{opacity:.45;cursor:not-allowed;transform:none}
+  .pet-actions .pet-play{min-width:85px;height:46px;gap:6px;border-color:#478f70;background:#478f70;color:white;font-weight:650;box-shadow:0 5px 12px #46866850}
+  .pet-actions .pet-play:hover{background:#367e60}
+  .pet-actions .pet-speed-button{font-size:11px;gap:3px;padding:0 8px}
+  .pet-actions .pet-speed-button[aria-expanded="true"]{background:#d9eadb;border-color:#75aa87}
+  .pet-actions .pet-return{min-width:37px;padding:0;color:#416953}
+  .pet-speed-options{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;padding:7px 0 3px;animation:pet-menu-in .16s ease-out}
+  .pet-speed-options button{min-height:28px;padding:3px 0;border:1px solid #c6d8c6;border-radius:6px;background:#edf5eb;color:#436452;font-size:10px}
+  .pet-speed-options button:hover,.pet-speed-options button[aria-checked="true"]{background:#478f70;border-color:#478f70;color:white}
+  @keyframes pet-menu-in{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
 `;
 
 function KaltsitChibi(){
@@ -49,22 +57,28 @@ function KaltsitChibi(){
 }
 
 export default function DesktopPet({chapter,line,status,rate,onToggle,onRateChange,onReturn}:DesktopPetProps){
+  const [speedOpen,setSpeedOpen]=useState(false);
   const paused=status==="paused";
   const statusText=status==="paused"?"已暂停":status==="loading"?"正在准备下一句":status==="error"?"音频加载失败":status==="ended"?"本段已结束":status==="choice"?"等待剧情选择":status==="silent"?"配音已静音":"随身听中";
   const canToggle=!["choice","ended","silent"].includes(status);
   return <>
     <style>{styles}</style>
     <div id="pet-root" className="pet-shell">
-      <div className="pet-heading"><strong>凯尔希 · 随身听</strong><span>{chapter}</span></div>
-      <KaltsitChibi/>
-      <div className="pet-status">{statusText} · 鼠标悬浮可操作</div>
-      <div className="pet-controls">
+      <div className="pet-stage">
+        <div className="pet-heading"><strong>凯尔希 · 随身听</strong><span>{chapter}</span></div>
+        <KaltsitChibi/>
+      </div>
+      <div className="pet-dock">
+        <div className="pet-now"><Headphones size={12}/><strong>{statusText}</strong></div>
         <p className="pet-line" title={line}>{line||"博士，故事还在继续。"}</p>
+        {speedOpen&&<div className="pet-speed-options" role="radiogroup" aria-label="播放速度">
+          {[.7,.8,.9,1,1.1,1.2,1.3,1.4,1.5].map(option=><button key={option} type="button" role="radio" aria-checked={Math.abs(rate-option)<.05} onClick={()=>{onRateChange(option);setSpeedOpen(false);}}>{option.toFixed(1)}×</button>)}
+        </div>}
         <div className="pet-actions">
-          <button className="pet-play" type="button" disabled={!canToggle} onClick={onToggle} aria-label={paused?"继续播放":"暂停播放"}>{paused?<Play size={14} fill="currentColor"/>:<Pause size={14} fill="currentColor"/>}{paused?"播放":"暂停"}</button>
-          <button className="pet-return" type="button" onClick={onReturn} aria-label="回到网页"><ExternalLink size={13}/>回到网页</button>
+          <button className="pet-play" type="button" disabled={!canToggle} onClick={onToggle} aria-label={paused?"继续播放":"暂停播放"}>{paused?<Play size={17} fill="currentColor"/>:<Pause size={17} fill="currentColor"/>}{paused?"播放":"暂停"}</button>
+          <button className="pet-speed-button" type="button" onClick={()=>setSpeedOpen(value=>!value)} aria-expanded={speedOpen} aria-label={`播放速度 ${rate.toFixed(1)} 倍，选择速度`}><Gauge size={14}/>{rate.toFixed(1)}×<ChevronUp size={12}/></button>
+          <button className="pet-return" type="button" onClick={onReturn} title="回到网页" aria-label="回到网页"><ExternalLink size={17}/></button>
         </div>
-        <label className="pet-speed"><span>速度</span><input aria-label="桌宠播放速度" type="range" min=".7" max="1.5" step=".1" value={rate} onChange={event=>onRateChange(Number(event.target.value))}/><b>{rate.toFixed(1)}×</b></label>
       </div>
     </div>
   </>;
