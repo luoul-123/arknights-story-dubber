@@ -25,6 +25,7 @@ export default function Theater(){
  const [auto,setAuto]=useState(false),[muted,setMuted]=useState(false),[musicVolume,setMusicVolume]=useState(.35),[volume,setVolume]=useState(.85),[rate,setRate]=useState(1);
  const [voiceStatus,setVoiceStatus]=useState("idle"),[voiceError,setVoiceError]=useState("");
  const [started,setStarted]=useState(false),[ended,setEnded]=useState(false),[full,setFull]=useState(false),[saved,setSaved]=useState<any>(null),[toast,setToast]=useState("");
+ const [focusGroupId,setFocusGroupId]=useState(()=>new URLSearchParams(window.location.search).get("group"));
  const chapterEpoch=useRef(0);
  const player=useRef<any>(null),advanceRef=useRef<()=>void>(()=>{}),stage=useRef<HTMLDivElement>(null);
  const step=steps[index],text=step?.text||"",characters=Array.from(text),complete=!typing||shown>=characters.length;
@@ -39,6 +40,7 @@ export default function Theater(){
   catch(e){if(requestId===chapterEpoch.current)setError((e as Error).message||"章节加载失败");}finally{if(requestId===chapterEpoch.current)setLoading(false);}
  },[]);
  useEffect(()=>{let resume=null;try{resume=JSON.parse(localStorage.getItem("terra-manual-save")||localStorage.getItem("zhousheng-progress")||"null");}catch{}loadChapter(resume?.chapter||FIRST,resume);},[loadChapter]);
+ useEffect(()=>{if(focusGroupId&&CATALOG.some(group=>group.id===focusGroupId))setDrawer("chapters");},[focusGroupId]);
  useEffect(()=>{setShown(0);if(!step||!typing)return;const timer=setInterval(()=>setShown(n=>Math.min(n+1,Array.from(step.text||"").length)),30);return()=>clearInterval(timer);},[step?.id,typing]);
  useEffect(()=>{if(!step||loading||!started)return;const data={chapter,index,choice,decisions,time:Date.now()};localStorage.setItem("zhousheng-progress",JSON.stringify(data));},[chapter,index,choice,decisions,step,loading,started]);
  useEffect(()=>{player.current?.setOptions({volume,rate});},[volume,rate]);
@@ -122,7 +124,7 @@ export default function Theater(){
   {drawer&&<div className="drawer-backdrop" onClick={()=>setDrawer(null)}><aside className={"drawer "+(drawer==="studio"?"studio-drawer":"")} onClick={e=>e.stopPropagation()}>
    <div className="drawer-head"><div><span className="eyebrow">{drawer==="studio"?"READING VOICE":drawer==="chapters"?"STORY ARCHIVE":drawer==="history"?"BACKLOG":"PREFERENCES"}</span><h2>{{chapters:"剧情档案",studio:"样例配音说明",history:"对话回顾",settings:"阅读设置"}[drawer]}</h2></div><IconButton label="关闭面板" onClick={()=>setDrawer(null)}><X size={21}/></IconButton></div>
    {listening&&started&&<div className="drawer-player"><Headphones size={17}/><div><b>{ended?"本段播放完毕":step?.type==="choice"?"等待剧情选择":voiceStatus==="paused"?"收听已暂停":"正在收听"} · {chapter.code}</b><span>{step?.speaker||"旁白"} · {text.slice(0,32)}</span></div><button aria-label={voiceStatus==="paused"?"继续随身听":"暂停随身听"} onClick={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()}>{voiceStatus==="paused"?<Play size={16}/>:<Pause size={16}/>}</button>{ended&&nextSection&&<button aria-label="确认进入下一段" onClick={continueSection}><ChevronRight size={17}/></button>}<button aria-label="随身听下一句" onClick={()=>move()}><SkipForward size={17}/></button></div>}
-   {drawer==="chapters"&&<StoryArchive groups={catalog} currentId={chapter.id} onSelect={(c:Chapter)=>{setDrawer(null);loadChapter(c);}} onRetry={()=>setCatalog(CATALOG)}/>}
+   {drawer==="chapters"&&<StoryArchive groups={catalog} currentId={chapter.id} focusGroupId={focusGroupId} onSelect={(c:Chapter)=>{const url=new URL(window.location.href);url.searchParams.delete("group");window.history.replaceState(null,"",url);setFocusGroupId(null);setDrawer(null);loadChapter(c);}} onRetry={()=>setCatalog(CATALOG)}/>}
    {drawer==="history"&&<div className="backlog">{!history.length?<p className="muted">读过的台词会出现在这里。</p>:history.map((h,i)=><button key={i} onClick={()=>{setIndex(h.index);setChoice(h.choice);setHistory(old=>old.slice(0,i));setEnded(false);setDrawer(null);}}><span>{String(h.index+1).padStart(3,"0")}</span><div><b>{h.step.speaker||"博士的选择"}</b><p>{h.step.text||"选择对话分支"}</p></div><ChevronRight size={15}/></button>)}</div>}
    {drawer==="settings"&&<div className="settings">
     <ThemeSelector value={theme} onChange={setTheme}/>

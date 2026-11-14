@@ -1,17 +1,24 @@
 import {DialogueAudio} from "../lib/audio.mjs";
 import manifest from "./audio-manifest.json";
+import audioSites from "./audio-sites.json";
 
 const available=manifest as Record<string,number[]>;
+const sites=audioSites as {chapters:Record<string,string>;prefixes:Record<string,string>};
 export const VOICED_COUNT=Object.keys(available).length;
 export const KALTSIT={id:"kaltsit",speaker:"凯尔希",version:"static"};
 export function staticAudioPath(stepId:string){
-  const match=/^activities\/act55side\/(level_act55side_[a-z0-9_]+):(\d+)$/.exec(stepId);
-  if(!match||!available[match[1]]?.includes(Number(match[2])))return null;
-  return import.meta.env.BASE_URL+"audio/"+match[1]+"/"+match[2]+".mp3";
+  const match=/^([^:]+):(\d+)$/.exec(stepId);
+  if(!match)return null;
+  const chapterId=match[1],slug=chapterId.split("/").pop()||"";
+  const indices=available[chapterId]??(chapterId.startsWith("activities/act55side/")?available[slug]:undefined);
+  if(!indices?.includes(Number(match[2])))return null;
+  const prefix=Object.keys(sites.prefixes).filter(key=>chapterId.startsWith(key)).sort((a,b)=>b.length-a.length)[0];
+  const base=sites.chapters[chapterId]??(prefix?sites.prefixes[prefix]:undefined)??import.meta.env.BASE_URL;
+  return base.replace(/\/?$/,"/")+"audio/"+slug+"/"+match[2]+".mp3";
 }
 export function isVoicedChapter(id:string){
   const slug=id.split("/").pop()||"";
-  return id.startsWith("activities/act55side/")&&Boolean(available[slug]?.length);
+  return Boolean(available[id]?.length||(id.startsWith("activities/act55side/")&&available[slug]?.length));
 }
 export class StaticDialogueAudio extends DialogueAudio{
   async load(line:any,voice:any,signal:AbortSignal){

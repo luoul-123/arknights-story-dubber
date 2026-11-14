@@ -58,6 +58,7 @@
 .theater[data-theme="light"] .search,.theater[data-theme="light"] .theme-options,.theater[data-theme="light"] .default-voices,.theater[data-theme="light"] .reading-modes button,.theater[data-theme="light"] .pages-voice-card,.theater[data-theme="light"] .drawer-player,.theater[data-theme="light"] .listen-badge{background:#e8efe6;color:var(--paper);border-color:var(--line)}
 .theater[data-theme="light"] .drawer input:not([type="range"]),.theater[data-theme="light"] .drawer textarea,.theater[data-theme="light"] .drawer select{background:#fff;color:var(--paper);border-color:var(--line)}
 .theater[data-theme="light"] .chapter-row:hover,.theater[data-theme="light"] .chapter-row.selected,.theater[data-theme="light"] .timeline-row:hover,.theater[data-theme="light"] .timeline-row.selected,.theater[data-theme="light"] .archive-views button[aria-selected="true"],.theater[data-theme="light"] .archive-categories button.selected{background:#dce9dc;color:var(--paper)}
+.archive-focus{font-size:12px;color:var(--muted);margin:10px 0 16px}.archive-focus button{color:var(--mint);text-decoration:underline;text-underline-offset:3px}
 .theater[data-theme="light"] .switch{background:#c7d5c8}
 .theater[data-theme="light"] .switch>span{background:#f8faf5}
 .theater[data-theme="light"] .primary,.theater[data-theme="light"] .theme-options button.selected{color:#fff}

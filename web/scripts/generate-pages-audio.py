@@ -21,6 +21,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--limit', type=int, default=0, help='Render only this many missing lines, for a smoke test')
     parser.add_argument('--section', help='Render one story section, skipping completed MP3 files')
+    parser.add_argument('--shard-root', type=Path, default=ROOT / 'work/vot-audio-20261101', help='Local checkout of the audio Pages repository')
     args = parser.parse_args()
     lines = json.loads((ROOT / 'work/pages-lines.json').read_text('utf-8'))
     if args.section:
@@ -28,7 +29,7 @@ def main():
         if not lines:
             raise ValueError('Unknown story section: ' + args.section)
     voice = next(c for c in server.read_store().values() if c.get('speaker') == '凯尔希' and c.get('published'))
-    target_root = ROOT / 'pages/public/audio'
+    target_root = args.shard_root.resolve() / 'audio'
     manifest_path = ROOT / 'pages/audio-manifest.json'
     rendered = 0
     completed = 0
