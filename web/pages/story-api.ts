@@ -8,9 +8,10 @@ const SOURCES=[
 ];
 export async function loadStory(id:string){
   if(!/^[a-zA-Z0-9_/-]{1,180}$/.test(id)||id.includes("..")||id.startsWith("/"))throw Error("无效章节");
-  if(id.startsWith('activities/act55side/')){
-    const response=await fetch(import.meta.env.BASE_URL+'sample/'+id.split('/').pop()+'.txt');
-    if(!response.ok)throw Error('样例剧情暂时无法加载');
+  if(id.startsWith('activities/act55side/')||id.startsWith('activities/act40side/')){
+    const source=id.startsWith('activities/act55side/')?'sample/':'story/act40side/';
+    const response=await fetch(import.meta.env.BASE_URL+source+id.split('/').pop()+'.txt');
+    if(!response.ok)throw Error('剧情暂时无法加载');
     return parseStory(await response.text(),id);
   }
   for(const base of SOURCES){

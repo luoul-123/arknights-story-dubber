@@ -7,6 +7,7 @@ on:
       - '.github/workflows/pages.yml'
       - 'web/pages/*'
       - 'web/pages/public/sample/**'
+      - 'web/pages/public/story/**'
       - 'web/app/globals.css'
       - 'web/lib/story.mjs'
       - 'web/lib/audio.mjs'

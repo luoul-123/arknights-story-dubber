@@ -4,13 +4,15 @@ import {parseStory} from '../lib/story.mjs';
 
 const pages=path.resolve(import.meta.dirname,'../pages');
 const catalog=JSON.parse(fs.readFileSync(path.join(pages,'catalog.json'),'utf8'));
-const group=catalog.find(item=>item.id==='act55side');
-if(!group||group.chapters.length!==24)throw Error('《时间啊，向前！》目录不完整');
+const groupId=process.argv[2]||'act55side';
+const group=catalog.find(item=>item.id===groupId);
+if(!group?.chapters.length)throw Error(`找不到故事组：${groupId}`);
+const sourceDir=groupId==='act55side'?path.join(pages,'public/sample'):path.join(pages,'public/story',groupId);
 
 const lines=[];
 for(const chapter of group.chapters){
   const slug=path.basename(chapter.id);
-  const file=path.join(pages,'public/sample',slug+'.txt');
+  const file=path.join(sourceDir,slug+'.txt');
   const raw=fs.readFileSync(file,'utf8');
   for(const step of parseStory(raw,chapter.id).steps){
     if(step.type!=='line'||!step.text)continue;
@@ -18,7 +20,8 @@ for(const chapter of group.chapters){
     lines.push({id:step.id,text:step.text});
   }
 }
-const target=path.resolve(import.meta.dirname,'../work/pages-lines.json');
+const output=groupId==='act55side'?'pages-lines.json':`pages-lines-${groupId}.json`;
+const target=path.resolve(import.meta.dirname,'../work',output);
 fs.mkdirSync(path.dirname(target),{recursive:true});
 fs.writeFileSync(target,JSON.stringify(lines));
 console.log(`${lines.length} 句，${new Set(lines.map(line=>line.text)).size} 种文本，输出 ${target}`);
