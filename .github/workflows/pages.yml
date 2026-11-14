@@ -5,7 +5,8 @@ on:
     branches: [main]
     paths:
       - '.github/workflows/pages.yml'
-      - 'web/pages/**'
+      - 'web/pages/*'
+      - 'web/pages/public/sample/**'
       - 'web/app/globals.css'
       - 'web/lib/story.mjs'
       - 'web/lib/audio.mjs'
