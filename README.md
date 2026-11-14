@@ -1,107 +1,44 @@
 # Voice of Terra · 泰拉之声
 
-在浏览器里看剧情、听对话和旁白，也可以开启「随身听」连续收听。网站直接读取剧情脚本，呈现背景、立绘差分、CG、对话框和分支选项。
+## 功能
 
-## 已实现
+Voice of Terra 是在浏览器中阅读和收听《明日方舟》剧情的非官方同人项目。
 
-| 功能 | 行为 |
+| 功能 | 说明 |
 | --- | --- |
-| 剧情阅读 | 逐字显示、分支选择、对话回顾、手动存档与自动进度 |
-| 朗读音色 | 阿米娅、凯尔希、佩丽卡、男管理员、女管理员五选一；全部台词和旁白使用所选声音 |
-| 随身听 | 播放结束自动继续；打开目录、回顾、设置仍持续播放，遇到分支或段落结束等待确认 |
-| 连续跳句 | 合并快速跳过请求，后端丢弃尚未执行的旧台词；旧音频不会串音 |
-| 剧情档案 | 主线、SideStory、故事集、个人密录等分类；国服实装时间线按章节或活动合集展示 |
-| 底部导航 | 左侧“上一句”返回台词；右侧“下一章”按目录顺序进入下一段（行动前 → 行动后） |
-| 段落衔接 | 读完后确认进入下一段，保持行动前 / 行动后及关卡顺序 |
-| 音乐与演出 | 按剧情脚本切换背景音乐、立绘表情和姿态；音乐、配音音量独立调节 |
-| 阅读设置 | 逐字显示、音量、语速及指向 GitHub 的开发者日志链接 |
-| 存档恢复 | 刷新优先恢复手动存档，没有手动存档时恢复自动进度 |
-| 资源缓存 | 已读取的目录、章节和媒体缓存在本机，网络失败时保留已有内容 |
+| 剧情剧场 | 展示背景、角色立绘及表情、CG、对话和分支选项；支持逐字显示与对话回顾 |
+| 角色配音 | 阿米娅、凯尔希、佩丽卡、男管理员、女管理员五种音色可选，所选音色朗读台词和旁白 |
+| 随身听 | 播放完一句后自动继续；遇到分支或段落结束时等待选择或确认 |
+| 剧情档案 | 按主线、SideStory、故事集、个人密录等分类浏览，支持搜索和时间线 |
+| 音乐与阅读设置 | 按剧情切换背景音乐，可分别调整音乐与配音音量、语速 |
+| 本地存档 | 手动存档与自动进度保存在当前浏览器，刷新后可以继续阅读 |
 
-读者无需上传、录制或训练声音。音色选择保存在浏览器中，首次默认阿米娅。只在服务器保存五个预设模型，浏览器按需接收音频，不下载模型。
+## 用户安装教程
 
-## 在 Windows 电脑上安装
+目前提供 **Windows 本地运行版**。电脑需要 Windows 10/11、NVIDIA GPU 及驱动、[Node.js 22.13 或更新版本](https://nodejs.org/)、[Python 3.11](https://www.python.org/downloads/) 和约 20 GB 可用磁盘空间。首次安装需要联网下载依赖、语音引擎和五套音色，可能需要较长时间。
 
-需要 Windows 10/11、Node.js 22.13+、Python 3.11+、NVIDIA GPU 与驱动，以及约 20 GB 可用磁盘空间。首次安装需要下载网页依赖、GPT-SoVITS 基础模型，以及约 1.2 GB 的五角色音色包；下载时间取决于网络。
+1. 前往 [Voice of Terra 最新发布页](https://github.com/luoul-123/arknights-story-dubber/releases/latest)，下载页面底部的 **Source code (zip)**，解压到本地文件夹。五套音色在同一发布页的 voice-of-terra-voices.zip 附件中；安装器会自动下载，无需手动解压。
+2. 双击解压后文件夹中的 **安装并启动.bat**。安装器会准备运行环境、下载音色，并在完成后打开浏览器。
+3. 以后双击 **启动网页版.bat** 即可使用；结束时双击 **停止网页版.bat**。本机访问地址为 http://127.0.0.1:5173/。
 
-1. 下载 GitHub 仓库的 ZIP 并解压，或运行 git clone。
-2. 双击根目录的 **安装并启动.bat**。安装器自动创建 Python 环境、安装网页和语音依赖、下载五套音色并打开浏览器。
-3. 以后双击 **启动网页版.bat**，结束时双击 **停止网页版.bat**。
+安装仅在自己的电脑上启动网页和语音服务，不需要云服务器。已有本项目五套音色数据的用户可保留 web/.voice-data/characters.json，安装器会跳过音色包下载。
 
-已经有自己的五套音色数据时，保留 web/.voice-data/characters.json，安装器会跳过音色包下载。
+## 架构和目录
 
-本机地址为 http://127.0.0.1:5173/。运行仅监听本机；无需云服务器。安装器所需的预设音色包作为 GitHub Release 附件分发，不能只下载仓库源码后跳过它。
+浏览器负责剧情展示与播放；网页服务读取剧情并将配音请求交给本机 Python 服务；Python 服务调用 GPT-SoVITS 生成音频并缓存结果。剧情、立绘和音乐按需从文末列出的公开素材源读取。
 
-## 开发者在这台电脑使用
-
-1. 双击根目录的 **启动网页版.bat**。
-2. 浏览器打开后进入剧情，或点击右上角 **随身听**。
-3. 在 **朗读音色设置** 选择声音；阅读设置可分别调节音乐和配音。
-4. 使用结束后双击 **停止网页版.bat**。
-
-本机地址为 http://127.0.0.1:5173/ 。启动器准备本地服务密钥并打开本地会话，只监听本机。网页需要本地服务提供剧情和语音，不能直接双击 HTML 完成全部功能。
-
-## 手动安装与开发
-
-当前验证环境为 Windows，需要 Node.js 22.13+、Python 3.11+ 和 Git。GPT-SoVITS 音色合成另需引擎及合适的 NVIDIA GPU。
-
-~~~powershell
-git clone https://github.com/luoul-123/arknights-story-dubber.git
-cd arknights-story-dubber
-py -3 -m venv .venv
-./.venv/Scripts/python.exe -m pip install -r requirements.txt
-cd web
-npm ci
-cd ..
-./安装并启动.bat
-~~~
-
-引擎安装：
-
-~~~powershell
-./.venv/Scripts/python.exe web/backend/setup_engine.py
-~~~
-
-首次安装引擎需要下载数 GB 文件。仓库源码不包含训练权重、缓存及密钥；完整安装器从 GitHub Release 下载已发布的五套预设音色。发布者可运行 web/backend/export_voice_bundle.py 生成音色包。详见 [音色准备说明](web/docs/default-voices.md)。
-
-## 架构与目录
-
-浏览器阅读 / 播放 → 网站服务端代理 → 本机语音服务 → GPT-SoVITS → 音频缓存。
-
-- web/app：视觉小说界面、朗读音色设置、剧情与配音 API。
-- web/lib：剧情脚本解析、分支场景和可中断播放器。
-- web/backend：素材下载、训练、发布、语音合成与媒体读取。
-- web/tests：剧情、音频与真实浏览器回归检查。
-- engines/、models/、web/.voice-data/：本机运行数据，均不提交。
-
-旧桌面 UI、OCR、录音室上传入口已移除。五个音色全部使用网络游戏语音重新准备；此前个人录音、旧角色模型、陈和杜宾等旧预设已从本机角色库删除。
-
-## 开发与验证
-
-~~~powershell
-cd web
-node --test tests/core.test.mjs
-../.venv/Scripts/python.exe -m unittest discover -s backend -p "test_*.py"
-npx tsc --noEmit
-npm run build
-~~~
-
-本机服务启动后，可顺序运行 tests/browser-smoke.mjs、tests/browser-navigation.mjs、tests/browser-media-save.mjs、tests/browser-preset-settings.mjs、tests/browser-rapid-skip.mjs、tests/browser-bottom-navigation.mjs。浏览器检查使用隐藏 Edge 并静音，覆盖后台播放、面板操作、下一段确认、立绘音乐、存档及预设选择。
-
-[运行与部署说明](web/IMPLEMENTATION.md) · [验证记录](web/VALIDATION.md) · [贡献指南](CONTRIBUTING.md)
-
-## 当前范围
-
-- 桌面 Edge 后台播放已验证；手机锁屏和系统媒体按钮尚未实机验证。
-- 首次加载模型、切换音色仍有等待时间。连续跳句会丢弃旧排队任务，但已经进入 GPU 的一次合成仍需结束；尚未实现整章预生成。
-- 当前目录 491 组 / 2,061 段。活动分周开放日期未逐关补齐，默认按活动首发日期归组。见 [日期来源](web/docs/catalog-sources.md)。
-- 支持常用剧情演出、立绘差分和音乐；复杂连续动画及部分特殊脚本指令尚未完整支持。
-- 未缓存资源需联网；本机版本未作为公网服务部署。Linux 尚未实机验证。
+| 路径 | 内容 |
+| --- | --- |
+| web/app/ | 剧情剧场界面与网页 API |
+| web/lib/ | 剧情解析、分支场景和音频播放器 |
+| web/backend/ | 本机语音服务、音色准备与素材处理 |
+| web/tests/ | 剧情、音频和浏览器检查 |
+| engines/、models/、web/.voice-data/ | 安装后生成的引擎、基础模型、预设音色和缓存；不提交到源码仓库 |
 
 ## 来源与许可
 
-原创代码采用 [MIT](LICENSE) 许可证。剧情文本、立绘、CG、音乐及角色录音归鹰角网络及相应权利人，独立于代码许可。
+原创代码采用 [MIT 许可证](LICENSE)。剧情文本、立绘、CG、音乐及角色录音归鹰角网络及相应权利人所有，不受代码许可证覆盖。
 
-剧情数据来自 [ArknightsGamedata](https://github.com/ArknightsAssets/ArknightsGamedata)，图片和《明日方舟》语音来自 [ArknightsAssets2](https://github.com/ArknightsAssets/ArknightsAssets2)，声音合成使用 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)。终末地素材来自社区 [Warfarin 佩丽卡语音页](https://warfarin.wiki/cn/operators/perlica) 和 [管理员语音页](https://warfarin.wiki/cn/operators/endministrator)。
+剧情数据来自 [ArknightsGamedata](https://github.com/ArknightsAssets/ArknightsGamedata)；图片及《明日方舟》语音来自 [ArknightsAssets2](https://github.com/ArknightsAssets/ArknightsAssets2)；语音合成使用 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS)。终末地素材来自社区 [Warfarin 佩丽卡语音页](https://warfarin.wiki/cn/operators/perlica)和[管理员语音页](https://warfarin.wiki/cn/operators/endministrator)。
 
-这是非官方同人项目，AI 合成台词不是官方剧情配音。
+本项目并非官方作品，AI 合成台词不是官方剧情配音。
