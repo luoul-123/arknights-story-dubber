@@ -153,6 +153,6 @@ export default function Theater(){
     <a className="developer-log-link" href="https://github.com/luoul-123/voice-of-terra-for-arknights/blob/main/web/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
   </aside></div>}
-  {petWindow&&createPortal(<DesktopPet chapter={chapter.code} line={step?.text||""} status={ended?"ended":step?.type==="choice"?"choice":muted?"silent":voiceStatus} rate={rate} onToggle={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()} onRateChange={setRate} onReturn={()=>{petWindow.close();window.focus();}}/>,petWindow.document.body)}
+  {petWindow&&createPortal(<DesktopPet chapter={chapter.code} line={step?.text||""} status={ended?"ended":step?.type==="choice"?"choice":muted?"silent":voiceStatus} rate={rate} onToggle={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()} onRateChange={setRate} onReturn={()=>window.focus()}/>,petWindow.document.body)}
  </main>;
 }
