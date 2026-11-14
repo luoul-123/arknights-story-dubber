@@ -8,7 +8,7 @@ export function attrs(source=""){
 }
 export function imageUrl(kind,name){
  if(!name || !/^[a-zA-Z0-9_#$-]+$/.test(name))return null;
- if(kind==="character")return "/api/media?kind=portrait&name="+encodeURIComponent(name);
+ if(kind==="character")return globalThis.__terraPortraitUrl?.(name) || "/api/media?kind=portrait&name="+encodeURIComponent(name);
  const base=name.split("#")[0];
  // Background and CG identifiers refer to standalone images.
  return MEDIA_ROOT+(kind==="character"?"characters/"+base+"/"+base+".png":(kind==="cg"?"images/":"backgrounds/")+base+".png");

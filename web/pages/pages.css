@@ -1,0 +1,6 @@
+.pages-note{font-size:11px;line-height:1.7;color:var(--muted);margin:14px 0}
+.pages-note strong{color:var(--mint);font-weight:500}
+.pages-voice-card{border:1px solid var(--line);background:#b4caae0c;padding:18px;margin-top:18px}
+.pages-voice-card h3{font-size:15px;font-weight:500;margin:0 0 10px}
+.pages-voice-card p{font-size:12px;line-height:1.8;color:var(--muted);margin:0}
+.listen-toggle:disabled{opacity:.42}
