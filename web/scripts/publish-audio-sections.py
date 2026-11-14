@@ -30,9 +30,21 @@ def remote_sha(cwd=ROOT):
     return output.split()[0]
 
 def push(cwd=ROOT):
-    for attempt in range(1,6):
-        if run(GIT+['push','origin','main'],cwd,check=False).returncode==0:return
-        say('Push retry',attempt,'/5')
+    failures=0
+    rebases=0
+    while failures<5:
+        result=run(GIT+['push','origin','main'],cwd,check=False)
+        if result.returncode==0:return
+        if 'fetch first' in result.stdout or 'non-fast-forward' in result.stdout:
+            # The maintainer may edit README on GitHub while a section renders.
+            # Replay only this unpublished local commit; never force-push.
+            rebases+=1
+            if rebases>3:raise RuntimeError('Remote main changed too often during push')
+            run(GIT+['fetch','origin','main'],cwd)
+            run(['git','rebase','origin/main'],cwd)
+            continue
+        failures+=1
+        say('Push retry',failures,'/5')
         time.sleep(15)
     raise RuntimeError('Git push failed after five attempts')
 
@@ -51,12 +63,6 @@ def write_release_state(slugs,lines):
         manifest[slug]=indices
     (WEB/'pages/audio-manifest.json').write_text(json.dumps(manifest,separators=(',',':')),encoding='utf-8')
     (WEB/'pages/voiced-chapters.json').write_text(json.dumps(slugs,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-
-def finish_readme():
-    file=ROOT/'README.md'
-    source=file.read_text('utf-8')
-    source=source.replace('凯尔希正在为 SideStory **《时间啊，向前！》** 讲述往事。','凯尔希已为 SideStory **《时间啊，向前！》** 完成全部 24 段配音。')
-    file.write_text(source,encoding='utf-8')
 
 def wait_live(slug,last_index):
     url=PAGE+'audio/'+slug+'/'+str(last_index)+'.mp3'
@@ -87,19 +93,17 @@ def main(once=False):
         shard_bytes=sum(file.stat().st_size for file in (SHARD/'audio').rglob('*.mp3'))
         if shard_bytes>SHARD_MAX_BYTES:raise RuntimeError('Audio shard exceeds 800 MiB safety budget')
         run(['git','add','--','audio/'+slug],SHARD)
-        run(['git','diff','--cached','--check'],SHARD)
-        run(['git','commit','-m',f'Publish Kaltsit audio section {position+1}/24: {slug}'],SHARD)
+        run(['git','diff','--cached','--check','--','audio/'+slug],SHARD)
+        run(['git','commit','--only','-m',f'Publish Kaltsit audio section {position+1}/24: {slug}','--','audio/'+slug],SHARD)
         push(SHARD)
         wait_live(slug,max(expected_lines(lines,slug)))
         current=slugs[:position+1]
         write_release_state(current,lines)
-        if len(current)==24:finish_readme()
         run(['node','scripts/verify-pages.mjs','--allow-extra-local-audio'],WEB)
         files=['web/pages/audio-manifest.json','web/pages/voiced-chapters.json']
-        if len(current)==24:files.append('README.md')
         run(['git','add','--']+files)
-        run(['git','diff','--cached','--check'])
-        run(['git','commit','-m',f'Publish Kaltsit voice section {position+1}/24: {slug}'])
+        run(['git','diff','--cached','--check','--']+files)
+        run(['git','commit','--only','-m',f'Publish Kaltsit voice section {position+1}/24: {slug}','--']+files)
         push()
         if once:break
 
