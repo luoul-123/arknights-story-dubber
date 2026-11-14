@@ -18,7 +18,15 @@ type DocumentPictureInPictureApi={requestWindow:(options:{width:number;height:nu
 const FIRST:Chapter={id:"activities/act55side/level_act55side_st01",title:"复生的奇迹",code:"TL-ST-1",tag:"幕间"};
 const BG=MEDIA_ROOT+"backgrounds/bg_cher_1.png";
 function IconButton({label,onClick,active=false,children}:any){return <button className={"icon-button "+(active?"active":"")} title={label} aria-label={label} onClick={onClick}>{children}</button>;}
-function Actor({actor,focus,total}:any){const [failed,setFailed]=useState(false);useEffect(()=>setFailed(false),[actor.key]);if(failed)return null;return <img alt="" className={"actor "+(focus?"focused":"dimmed")+" "+(total===1?"solo":"")+" actor-slot-"+(actor.slot||"m")} style={{opacity:actor.opacity,translate:actor.offset?actor.offset[0]+"px "+(-actor.offset[1])+"px":undefined,scale:actor.scale}} src={actor.url} onError={()=>setFailed(true)}/>;}
+function Actor({actor,focus,total}:any){
+ const [failed,setFailed]=useState(false);
+ useEffect(()=>setFailed(false),[actor.key]);
+ if(failed)return null;
+ // Game camera zooms of 1.5–1.8 crop portraits in this smaller browser stage.
+ const sourceScale=Number(actor.scale);
+ const zoomed=Number.isFinite(sourceScale)&&sourceScale>1.2;
+ return <img alt="" className={"actor "+(focus?"focused":"dimmed")+" "+(total===1?"solo":"")+(zoomed?" zoomed":"")+" actor-slot-"+(actor.slot||"m")} style={{opacity:actor.opacity,translate:actor.offset?actor.offset[0]+"px "+(-actor.offset[1])+"px":undefined,scale:zoomed?1.2:actor.scale}} src={actor.url} onError={()=>setFailed(true)}/>;
+}
 export default function Theater(){
  const [chapter,setChapter]=useState<Chapter>(FIRST),[steps,setSteps]=useState<Step[]>([]),[index,setIndex]=useState(0),[choice,setChoice]=useState<string|null>(null),[decisions,setDecisions]=useState<Record<string,string>>({});
  const [catalog,setCatalog]=useState<Group[]>(CATALOG),[loading,setLoading]=useState(true),[error,setError]=useState(""),[drawer,setDrawer]=useState<string|null>(null);

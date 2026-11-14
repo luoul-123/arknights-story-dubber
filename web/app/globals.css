@@ -68,9 +68,14 @@
 .theater[data-theme="light"] .entry-copy h1>span{color:#b6d1ac}
 .theater[data-theme="light"] .scene-meta{color:#d4e4d3b0}
 
+/* Game zoom cues can be much larger than this browser stage; keep faces in view. */
+.actor.zoomed{transform-origin:center top;margin-top:min(8%,60px)}
+
 /* Keep portraits larger and lower on wide displays without covering the dialogue. */
 @media(min-width:1400px) and (min-height:800px){
   .actors{inset:20% 15% -3%}
   .actor{width:49%;height:100%;margin-top:0;object-position:center top}
   .actor.solo{width:68%}
+  .actor.zoomed{margin-top:0}
 }
+@media(max-width:600px){.actor.zoomed{margin-top:0;scale:1!important}}
