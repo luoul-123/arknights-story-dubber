@@ -26,3 +26,43 @@
 .chapter-nav-button{display:flex;align-items:center;justify-content:center;gap:4px;color:#bac4bf;padding:4px 0}.chapter-nav-button small{font-size:10px;white-space:nowrap;color:var(--muted)}.chapter-nav-button:hover:not(:disabled){color:var(--mint)}@media(max-width:600px){.chapter-nav-button{gap:2px}.chapter-nav-button svg{width:16px}.chapter-nav-button small{font-size:9px}.control-center{gap:9px}}
 
 @media(max-width:760px){.control-left{gap:13px}.control-left>button{font-size:0;gap:0}.control-left .control-sep{display:none}}
+
+/* Keep the scene visible while leaving room for longer dialogue. */
+.dialogue-shell{left:50%;right:auto;width:min(840px,calc(100% - 150px));transform:translateX(-50%);bottom:82px;padding:13px 26px 10px;min-height:0;max-height:min(28dvh,220px);overflow-y:auto}
+.dialogue-header h2{font-size:15px}
+.dialogue-text{font-size:18px;line-height:1.75;min-height:62px;padding:10px 24px 8px 13px}
+.dialogue-bottom{padding-top:6px}
+@media(max-width:900px){.dialogue-shell{width:calc(100% - 60px);bottom:80px}}
+@media(max-width:600px){.dialogue-shell{width:calc(100% - 24px);bottom:76px;padding:12px 15px 8px;max-height:36dvh}.dialogue-text{font-size:16px;line-height:1.65;min-height:58px;padding:9px 20px 7px 0}}
+
+.theme-options{display:flex;flex-shrink:0;gap:3px;padding:3px;border:1px solid var(--line);border-radius:5px;background:#ffffff08}
+.theme-options button{min-width:52px;padding:8px 10px;border-radius:3px;color:var(--muted);font-size:12px}
+.theme-options button.selected{background:var(--mint);color:#14231b;font-weight:600}
+@media(max-width:450px){.theme-setting{align-items:flex-start;flex-direction:column}.theme-options{width:100%}.theme-options button{flex:1}}
+
+/* Light theme changes the reading chrome and leaves game art untouched. */
+.theater[data-theme="light"]{--mint:#3d6555;--paper:#1d302e;--muted:#536b66;--line:#35554b36;--accent:#725f43;color-scheme:light;color:var(--paper);background:#e7ece6}
+.theater[data-theme="light"] .topbar{background:linear-gradient(180deg,#f7f9f4f7,#f7f9f4c9 78%,transparent)}
+.theater[data-theme="light"] .controlbar{background:#f7f9f4ed;border-top:1px solid var(--line)}
+.theater[data-theme="light"] .dialogue-shell{background:linear-gradient(115deg,#fbfcf8f2,#eaf1e9e9);border:1px solid #42665455;box-shadow:0 12px 48px #0f241b3d}
+.theater[data-theme="light"] .dialogue-header h2{color:var(--paper)}
+.theater[data-theme="light"] .dialogue-bottom,.theater[data-theme="light"] .chapter-row{border-bottom-color:var(--line)}
+.theater[data-theme="light"] .drawer{background:#f7f9f5f9;box-shadow:-35px 0 90px #1531264d}
+.theater[data-theme="light"] .drawer-backdrop{background:#162b2366}
+.theater[data-theme="light"] .center-card,.theater[data-theme="light"] .choice-panel>button{background:#f8faf5f2;border-color:var(--line)}
+.theater[data-theme="light"] .choice-panel>button:hover{background:#e1ebe0;color:var(--paper)}
+.theater[data-theme="light"] .chapter-heading>span:first-child,.theater[data-theme="light"] .brand-en,.theater[data-theme="light"] .icon-button,.theater[data-theme="light"] .control-left>button,.theater[data-theme="light"] .auto-button,.theater[data-theme="light"] .chapter-nav-button,.theater[data-theme="light"] .line-number,.theater[data-theme="light"] .line-number span,.theater[data-theme="light"] .click-hint,.theater[data-theme="light"] .source-note{color:#435b55}
+.theater[data-theme="light"] .auto-button>span,.theater[data-theme="light"] .chapter-row svg,.theater[data-theme="light"] .timeline-row div>span{color:#617a70}
+.theater[data-theme="light"] .tag,.theater[data-theme="light"] .listen-toggle{border-color:var(--line);color:#3c5b50}
+.theater[data-theme="light"] .divider,.theater[data-theme="light"] .control-sep{background:#3d60563b}
+.theater[data-theme="light"] .search,.theater[data-theme="light"] .theme-options,.theater[data-theme="light"] .default-voices,.theater[data-theme="light"] .reading-modes button,.theater[data-theme="light"] .pages-voice-card,.theater[data-theme="light"] .drawer-player,.theater[data-theme="light"] .listen-badge{background:#e8efe6;color:var(--paper);border-color:var(--line)}
+.theater[data-theme="light"] .drawer input:not([type="range"]),.theater[data-theme="light"] .drawer textarea,.theater[data-theme="light"] .drawer select{background:#fff;color:var(--paper);border-color:var(--line)}
+.theater[data-theme="light"] .chapter-row:hover,.theater[data-theme="light"] .chapter-row.selected,.theater[data-theme="light"] .timeline-row:hover,.theater[data-theme="light"] .timeline-row.selected,.theater[data-theme="light"] .archive-views button[aria-selected="true"],.theater[data-theme="light"] .archive-categories button.selected{background:#dce9dc;color:var(--paper)}
+.theater[data-theme="light"] .switch{background:#c7d5c8}
+.theater[data-theme="light"] .switch>span{background:#f8faf5}
+.theater[data-theme="light"] .primary,.theater[data-theme="light"] .theme-options button.selected{color:#fff}
+.theater[data-theme="light"] .primary:hover{background:#315344}
+.theater[data-theme="light"] .entry-copy{color:#f5f6ef}
+.theater[data-theme="light"] .entry-copy p,.theater[data-theme="light"] .entry-foot{color:#dee8dd}
+.theater[data-theme="light"] .entry-copy h1>span{color:#b6d1ac}
+.theater[data-theme="light"] .scene-meta{color:#d4e4d3b0}

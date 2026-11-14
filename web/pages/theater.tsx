@@ -3,6 +3,7 @@ import {useCallback,useEffect,useRef,useState} from "react";
 import {BookOpen,Settings2,Volume2,VolumeX,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Mic2,Check,RefreshCw,LoaderCircle,SkipForward,Triangle,Save} from "lucide-react";
 import StoryArchive from "./story-archive";
 import StoryMusic from "./story-music";
+import ThemeSelector,{type Theme} from "../app/theme-selector";
 import {StaticDialogueAudio,KALTSIT,staticAudioPath,isVoicedChapter,VOICED_COUNT} from "./audio";
 import {CATALOG,loadStory} from "./story-api";
 import {nextIndex,nextChapter,previousStep,resolveScene,MEDIA_ROOT} from "../lib/story.mjs";
@@ -18,7 +19,7 @@ function Actor({actor,focus,total}:any){const [failed,setFailed]=useState(false)
 export default function Theater(){
  const [chapter,setChapter]=useState<Chapter>(FIRST),[steps,setSteps]=useState<Step[]>([]),[index,setIndex]=useState(0),[choice,setChoice]=useState<string|null>(null),[decisions,setDecisions]=useState<Record<string,string>>({});
  const [catalog,setCatalog]=useState<Group[]>(CATALOG),[loading,setLoading]=useState(true),[error,setError]=useState(""),[drawer,setDrawer]=useState<string|null>(null);
- const [history,setHistory]=useState<{index:number;step:Step;choice:string|null}[]>([]),[typing,setTyping]=useState(true),[shown,setShown]=useState(0);
+ const [history,setHistory]=useState<{index:number;step:Step;choice:string|null}[]>([]),[typing,setTyping]=useState(true),[shown,setShown]=useState(0),[theme,setTheme]=useState<Theme>("dark");
  const readerVoice=KALTSIT;
  const [listening,setListening]=useState(false);const listeningRef=useRef(false),moveRef=useRef<()=>void>(()=>{}),backRef=useRef<()=>void>(()=>{});
  const [auto,setAuto]=useState(false),[muted,setMuted]=useState(false),[musicVolume,setMusicVolume]=useState(.35),[volume,setVolume]=useState(.85),[rate,setRate]=useState(1);
@@ -29,9 +30,9 @@ export default function Theater(){
  const step=steps[index],text=step?.text||"",characters=Array.from(text),complete=!typing||shown>=characters.length;
  useEffect(()=>{player.current=new StaticDialogueAudio({onState:(state:string,msg?:string)=>{setVoiceStatus(state);setVoiceError(msg||"");if("mediaSession" in navigator)navigator.mediaSession.playbackState=state==="playing"?"playing":state==="paused"?"paused":"none";}});return()=>{player.current?.dispose();window.speechSynthesis?.cancel();};},[]);
  useEffect(()=>{
-  try{const s=JSON.parse(localStorage.getItem("terra-manual-save")||localStorage.getItem("zhousheng-progress")||"null");if(s)setSaved(s);const settings=JSON.parse(localStorage.getItem("zhousheng-settings")||"null");if(settings){setTyping(settings.typing??true);setVolume(settings.volume??.85);setMusicVolume(settings.musicVolume??.35);}}catch{}
+  try{const s=JSON.parse(localStorage.getItem("terra-manual-save")||localStorage.getItem("zhousheng-progress")||"null");if(s)setSaved(s);const settings=JSON.parse(localStorage.getItem("zhousheng-settings")||"null");if(settings){setTyping(settings.typing??true);setVolume(settings.volume??.85);setMusicVolume(settings.musicVolume??.35);setTheme(settings.theme==="light"?"light":"dark");}}catch{}
  },[]);
- useEffect(()=>{localStorage.setItem("zhousheng-settings",JSON.stringify({typing,volume,musicVolume}));},[typing,volume,musicVolume]);
+ useEffect(()=>{localStorage.setItem("zhousheng-settings",JSON.stringify({typing,volume,musicVolume,theme}));},[typing,volume,musicVolume,theme]);
  const loadChapter=useCallback(async(c:Chapter,resume?:any)=>{
   const requestId=++chapterEpoch.current;player.current?.stop();window.speechSynthesis?.cancel();setStarted(false);setLoading(true);setError("");setEnded(false);setHistory([]);setChapter(c);setSteps([]);
   try{const j:any=await loadStory(c.id);if(requestId!==chapterEpoch.current)return;if(!j.steps.length)throw Error("本章暂时没有可读取的台词");setSteps(j.steps);setIndex(Math.min(resume?.index||0,j.steps.length-1));setChoice(resume?.choice||null);setDecisions(resume?.decisions||{});if(listeningRef.current&&isVoicedChapter(c.id))setStarted(true);else if(!isVoicedChapter(c.id)){setListening(false);listeningRef.current=false;}}
@@ -85,7 +86,7 @@ export default function Theater(){
  const nextSection=nextChapter(catalog,chapter.id);
  const continueSection=async()=>{if(!nextSection)return;setDrawer(null);await loadChapter(nextSection);setStarted(true);};
  const fullScreen=async()=>{if(document.fullscreenElement)await document.exitFullscreen();else await stage.current?.requestFullscreen();setFull(!!document.fullscreenElement);};
- return <main className="theater" ref={stage}>
+ return <main className="theater" data-theme={theme} ref={stage}>
   <StoryMusic music={scene?.music} volume={musicVolume*(scene?.musicVolume??1)} active={started&&!loading&&!ended&&!(listening&&voiceStatus==="paused")}/>
   <div className="scene" onClick={advance} aria-hidden="true">
    <img key={scene?.background||"blank"} className="background" style={{opacity:started&&!scene?.background?0:undefined}} src={scene?.background||BG} alt="" onError={e=>{e.currentTarget.style.opacity="0";}}/>
@@ -124,6 +125,7 @@ export default function Theater(){
    {drawer==="chapters"&&<StoryArchive groups={catalog} currentId={chapter.id} onSelect={(c:Chapter)=>{setDrawer(null);loadChapter(c);}} onRetry={()=>setCatalog(CATALOG)}/>}
    {drawer==="history"&&<div className="backlog">{!history.length?<p className="muted">读过的台词会出现在这里。</p>:history.map((h,i)=><button key={i} onClick={()=>{setIndex(h.index);setChoice(h.choice);setHistory(old=>old.slice(0,i));setEnded(false);setDrawer(null);}}><span>{String(h.index+1).padStart(3,"0")}</span><div><b>{h.step.speaker||"博士的选择"}</b><p>{h.step.text||"选择对话分支"}</p></div><ChevronRight size={15}/></button>)}</div>}
    {drawer==="settings"&&<div className="settings">
+    <ThemeSelector value={theme} onChange={setTheme}/>
     <div className="setting-row"><div><b>逐字显示台词</b><p>点击补全，再点击推进剧情</p></div><button className={"switch "+(typing?"on":"")} aria-label="逐字显示台词" aria-pressed={typing} onClick={()=>setTyping(t=>!t)}><span/></button></div>
     <label className="slider-setting"><span>背景音乐音量 <b>{Math.round(musicVolume*100)}%</b></span><input aria-label="背景音乐音量" type="range" min="0" max="1" step=".05" value={musicVolume} onChange={e=>setMusicVolume(+e.target.value)}/></label>
     <label className="slider-setting"><span>配音音量 <b>{Math.round(volume*100)}%</b></span><input type="range" min="0" max="1" step=".05" aria-label="配音音量" value={volume} onChange={e=>setVolume(+e.target.value)}/></label>
