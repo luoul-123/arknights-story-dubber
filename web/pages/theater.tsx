@@ -3,7 +3,7 @@ import {useCallback,useEffect,useRef,useState} from "react";
 import {BookOpen,Settings2,Volume2,VolumeX,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Mic2,Check,RefreshCw,LoaderCircle,SkipForward,Triangle,Save} from "lucide-react";
 import StoryArchive from "./story-archive";
 import StoryMusic from "./story-music";
-import {StaticDialogueAudio,KALTSIT,staticAudioPath,isVoicedChapter} from "./audio";
+import {StaticDialogueAudio,KALTSIT,staticAudioPath,isVoicedChapter,VOICED_COUNT} from "./audio";
 import {CATALOG,loadStory} from "./story-api";
 import {nextIndex,nextChapter,previousStep,resolveScene,MEDIA_ROOT} from "../lib/story.mjs";
 type Scene={background:string|null;cg:string|null;actors:{key:string;url:string}[];focus:number};
@@ -102,7 +102,7 @@ export default function Theater(){
   <aside className="scene-meta"><span className="tiny-cross">+</span><span>RHODES ISLAND</span><div/><span>STORY ARCHIVE / {chapter.code}</span></aside>
   {loading&&<div className="center-card loading"><LoaderCircle className="spin" size={27}/><h2>正在打开泰拉的故事</h2><p>加载章节与演出资源</p></div>}
   {error&&<div className="center-card"><h2>这一页暂时没有打开</h2><p>{error}</p><button className="primary" onClick={()=>loadChapter(chapter)}><RefreshCw size={16}/>重新加载</button><button onClick={()=>openDrawer("chapters")}>选择其他章节</button></div>}
-  {!loading&&!error&&!started&&<div className="entry-overlay"><div className="entry-copy"><span className="eyebrow">ARKNIGHTS · VOICED STORY THEATER</span><h1>让故事，<br/>有声而至<span>。</span></h1><p>阅读泰拉的故事，先从《时间啊，向前！》首段听听凯尔希的声音。</p><div className="entry-actions"><button className="primary" onClick={()=>setStarted(true)}><Play size={17} fill="currentColor"/>进入剧情<span>{chapter.code} / {chapter.title}</span></button>{saved&&<button className="text-button" onClick={()=>loadChapter(saved.chapter,saved).then(()=>setStarted(true))}>继续上次阅读 <ChevronRight size={15}/></button>}</div><span className="entry-foot"><Headphones size={14}/>TL-ST-1「复生的奇迹」有声体验 · 其他剧情可阅读</span></div><div className="entry-number">TL<span>时间啊，向前！</span></div></div>}
+  {!loading&&!error&&!started&&<div className="entry-overlay"><div className="entry-copy"><span className="eyebrow">ARKNIGHTS · VOICED STORY THEATER</span><h1>让故事，<br/>有声而至<span>。</span></h1><p>阅读泰拉的故事，听凯尔希讲述《时间啊，向前！》。</p><div className="entry-actions"><button className="primary" onClick={()=>setStarted(true)}><Play size={17} fill="currentColor"/>进入剧情<span>{chapter.code} / {chapter.title}</span></button>{saved&&<button className="text-button" onClick={()=>loadChapter(saved.chapter,saved).then(()=>setStarted(true))}>继续上次阅读 <ChevronRight size={15}/></button>}</div><span className="entry-foot"><Headphones size={14}/>已开放 {VOICED_COUNT}/24 段凯尔希配音 · 其他剧情可阅读</span></div><div className="entry-number">TL<span>时间啊，向前！</span></div></div>}
   {started&&step?.type==="choice"&&!ended&&<div className="choice-panel"><span className="eyebrow">博士，你的选择</span>{step.choices?.map((c,i)=><button key={c.value+i} onClick={()=>move(c.value)}><span>0{i+1}</span>{c.label}<ChevronRight size={17}/></button>)}</div>}
   {ended&&<div className="center-card chapter-complete"><span className="eyebrow">TO BE CONTINUED</span><h2>本段故事已读完</h2>{nextSection?<><p>下一段：{nextSection.code} · {nextSection.title}<br/><span>{nextSection.tag}</span></p><button className="primary" onClick={continueSection}>继续下一段 <ChevronRight size={17}/></button></>:<p>这一系列暂时读完了，去探索其他故事吧。</p>}<button onClick={()=>openDrawer("chapters")}>打开剧情档案</button><button onClick={()=>{setEnded(false);back();}}>返回上一句</button></div>}
   {started&&!loading&&!error&&step?.type==="line"&&!ended&&<section className="dialogue-shell" aria-label="剧情对话">
@@ -130,7 +130,7 @@ export default function Theater(){
     <label className="slider-setting"><span>播放速度 <b>{rate.toFixed(1)}×</b></span><input type="range" min=".7" max="1.5" step=".1" aria-label="播放速度" value={rate} onChange={e=>setRate(+e.target.value)}/></label>
     <a className="developer-log-link" href="https://github.com/luoul-123/voice-of-terra-for-arknights/blob/main/web/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
-   {drawer==="studio"&&<><div className="pages-voice-card"><h3>凯尔希 · 样例配音</h3><p>当前仅 SideStory《时间啊，向前！》TL-ST-1「复生的奇迹」提供预先生成的凯尔希音色。其余段落和章节可阅读剧情、查看立绘并聆听背景音乐，暂不提供朗读。</p></div></>}
+   {drawer==="studio"&&<><div className="pages-voice-card"><h3>凯尔希 · 样例配音</h3><p>SideStory《时间啊，向前！》已开放 {VOICED_COUNT}/24 段预先生成的凯尔希配音。{VOICED_COUNT<24?"后续段落会逐步上线。":"整部 SideStory 已开放。"}其他章节可阅读剧情、查看立绘并聆听背景音乐。</p></div></>}
   </aside></div>}
  </main>;
 }

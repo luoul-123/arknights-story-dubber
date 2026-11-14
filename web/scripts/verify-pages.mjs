@@ -29,6 +29,6 @@ for(const chapter of group.chapters){
  count+=lines.length;
 }
 const audioDirectories=fs.readdirSync(path.join(root,'public/audio'),{withFileTypes:true}).filter(entry=>entry.isDirectory()).map(entry=>entry.name);
-if(audioDirectories.some(slug=>!voiced.includes(slug)))throw Error('音频目录包含未发布章节');
+if(!process.argv.includes('--allow-extra-local-audio')&&audioDirectories.some(slug=>!voiced.includes(slug)))throw Error('音频目录包含未发布章节');
 if(bytes>=1024*1024*1024)throw Error('音频超过 GitHub Pages 1 GB 限额');
 console.log(`Pages sample verified: ${voiced.length} voiced section(s), ${count} lines, ${(bytes/1024/1024).toFixed(1)} MiB audio`);

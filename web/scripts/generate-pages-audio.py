@@ -20,8 +20,13 @@ except ImportError:
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--limit', type=int, default=0, help='Render only this many missing lines, for a smoke test')
+    parser.add_argument('--section', help='Render one story section, skipping completed MP3 files')
     args = parser.parse_args()
     lines = json.loads((ROOT / 'work/pages-lines.json').read_text('utf-8'))
+    if args.section:
+        lines = [line for line in lines if line['id'].startswith('activities/act55side/' + args.section + ':')]
+        if not lines:
+            raise ValueError('Unknown story section: ' + args.section)
     voice = next(c for c in server.read_store().values() if c.get('speaker') == '凯尔希' and c.get('published'))
     target_root = ROOT / 'pages/public/audio'
     manifest_path = ROOT / 'pages/audio-manifest.json'

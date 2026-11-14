@@ -2,6 +2,7 @@ import {DialogueAudio} from "../lib/audio.mjs";
 import manifest from "./audio-manifest.json";
 
 const available=manifest as Record<string,number[]>;
+export const VOICED_COUNT=Object.keys(available).length;
 export const KALTSIT={id:"kaltsit",speaker:"凯尔希",version:"static"};
 export function staticAudioPath(stepId:string){
   const match=/^activities\/act55side\/(level_act55side_[a-z0-9_]+):(\d+)$/.exec(stepId);
