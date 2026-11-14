@@ -1,4 +1,4 @@
-# Voice of Terra · 泰拉之声
+# Voice of Terra · 泰拉之声 | 明日方舟有声视觉小说
 
 ## 功能
 
