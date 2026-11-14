@@ -23,7 +23,8 @@ Voice of Terra 泰拉之声是在浏览器中阅读和收听《明日方舟》�
 
 ## 更新日志
 
-2026-11-14 sidestory《时间啊，向前！》的有声音频已上传。
+2026-11-14 更新了sidestory《时间啊，向前！》的音频。
+2026-11-14 更新了sidestory《相见欢》的音频。
 
 ## 架构和目录
 
@@ -41,6 +42,6 @@ Voice of Terra 泰拉之声是在浏览器中阅读和收听《明日方舟》�
 
 原创代码采用 [MIT 许可证](LICENSE)。剧情文本、立绘、CG、音乐和角色录音归鹰角网络及相应权利人所有，不受代码许可证覆盖。
 
-剧情数据来自 [ArknightsGamedata](https://github.com/ArknightsAssets/ArknightsGamedata)；立绘与演出素材来自 [ArknightsAssets2](https://github.com/ArknightsAssets/ArknightsAssets2)；桌宠动画由[游戏原版凯尔希战斗小人素材](https://github.com/fexli/ArknightsResource/tree/main/spine/char_003_kalts/char_003_kalts/Front)导出；凯尔希配音使用 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) 在本地生成。
+剧情数据来自 [ArknightsGamedata](https://github.com/ArknightsAssets/ArknightsGamedata)；立绘与演出素材来自 [ArknightsAssets2](https://github.com/ArknightsAssets/ArknightsAssets2)；桌宠动画由[游戏内凯尔希战斗小人素材](https://github.com/fexli/ArknightsResource/tree/main/spine/char_003_kalts/char_003_kalts/Front)导出；凯尔希配音使用 [GPT-SoVITS](https://github.com/RVC-Boss/GPT-SoVITS) 在本地生成。
 
 注：泰拉之声是个人为爱发电制作的非官方作品。AI 合成的台词仅供同人体验，并非官方剧情配音。个人精力有限，更新缓慢还请理解，欢迎各位博士反馈与交流~
