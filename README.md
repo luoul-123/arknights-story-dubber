@@ -26,7 +26,7 @@ Voice of Terra 泰拉之声是在浏览器中阅读和收听《明日方舟》�
 
 ## 架构和目录
 
-主网页由 GitHub Pages 托管，浏览器读取剧情文本、立绘、CG 与音乐。凯尔希音频在本地提前生成 MP3，发布到独立的 [音频 Pages 分站 vot-audio-20261101](https://github.com/luoul-123/vot-audio-20261101)；主网页依据音频索引读取对应分站。后续故事可以使用新的音频分站，每个分站须遵守 GitHub Pages 的 [1 GB 站点上限](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)。
+主网页由 GitHub Pages 托管，浏览器读取剧情文本、立绘、CG 与音乐。凯尔希音频在本地提前生成 MP3，发布到独立的音频Pages分站；主网页依据音频索引读取对应分站。后续故事可以使用新的音频分站，每个分站须遵守 GitHub Pages 的 [1 GB 站点上限](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)。
 
 | 路径                                      | 内容                                                 |
 | ----------------------------------------- | ---------------------------------------------------- |
