@@ -14,7 +14,7 @@ type Step={id:string;type:string;text?:string;speaker?:string;route:string[]|nul
 type Chapter={id:string;title:string;code:string;tag:string};
 type Group={id:string;title:string;chapters:Chapter[]};
 type Voice={id:string;speaker:string;version:string;aliases?:string[];kind?:string};
-type DocumentPictureInPictureApi={requestWindow:(options:{width:number;height:number})=>Promise<Window>};
+type DocumentPictureInPictureApi={requestWindow:(options:{width:number;height:number;preferInitialWindowPlacement?:boolean;disallowReturnToOpener?:boolean})=>Promise<Window>};
 const FIRST:Chapter={id:"activities/act55side/level_act55side_st01",title:"复生的奇迹",code:"TL-ST-1",tag:"幕间"};
 const BG=MEDIA_ROOT+"backgrounds/bg_cher_1.png";
 function IconButton({label,onClick,active=false,children}:any){return <button className={"icon-button "+(active?"active":"")} title={label} aria-label={label} onClick={onClick}>{children}</button>;}
@@ -94,7 +94,7 @@ export default function Theater(){
   const api=(window as Window & {documentPictureInPicture?:DocumentPictureInPictureApi}).documentPictureInPicture;
   if(!api){setToast("当前浏览器不支持悬浮桌宠，随身听仍可使用");return;}
   if(petWindowRef.current&&!petWindowRef.current.closed){petWindowRef.current.focus();return;}
-  void api.requestWindow({width:260,height:340}).then(pip=>{
+  void api.requestWindow({width:180,height:220,preferInitialWindowPlacement:true,disallowReturnToOpener:true}).then(pip=>{
    if(!listeningRef.current){pip.close();return;}
    pip.document.title="凯尔希 · 泰拉之声";
    petWindowRef.current=pip;
@@ -153,6 +153,6 @@ export default function Theater(){
     <a className="developer-log-link" href="https://github.com/luoul-123/voice-of-terra-for-arknights/blob/main/web/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
   </aside></div>}
-  {petWindow&&createPortal(<DesktopPet chapter={chapter.code} line={step?.text||""} status={ended?"ended":step?.type==="choice"?"choice":muted?"silent":voiceStatus} rate={rate} onToggle={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()} onRateChange={setRate} onReturn={()=>window.focus()}/>,petWindow.document.body)}
+  {petWindow&&createPortal(<DesktopPet chapter={chapter.code} status={ended?"ended":step?.type==="choice"?"choice":muted?"silent":voiceStatus} rate={rate} onToggle={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()} onRateChange={setRate} onReturn={()=>window.focus()}/>,petWindow.document.body)}
  </main>;
 }
