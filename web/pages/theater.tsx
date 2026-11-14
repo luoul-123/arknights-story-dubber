@@ -94,7 +94,7 @@ export default function Theater(){
   const api=(window as Window & {documentPictureInPicture?:DocumentPictureInPictureApi}).documentPictureInPicture;
   if(!api){setToast("当前浏览器不支持悬浮桌宠，随身听仍可使用");return;}
   if(petWindowRef.current&&!petWindowRef.current.closed){petWindowRef.current.focus();return;}
-  void api.requestWindow({width:320,height:420}).then(pip=>{
+  void api.requestWindow({width:260,height:340}).then(pip=>{
    if(!listeningRef.current){pip.close();return;}
    pip.document.title="凯尔希 · 泰拉之声";
    petWindowRef.current=pip;
