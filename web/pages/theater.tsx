@@ -1,8 +1,10 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from "react";
-import {BookOpen,Settings2,Volume2,VolumeX,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Check,RefreshCw,LoaderCircle,SkipForward,Triangle,Save} from "lucide-react";
+import {createPortal} from "react-dom";
+import {BookOpen,Settings2,Volume2,VolumeX,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Check,RefreshCw,LoaderCircle,SkipForward,Triangle,Save,PictureInPicture2} from "lucide-react";
 import StoryArchive from "./story-archive";
 import StoryMusic from "./story-music";
+import DesktopPet from "./desktop-pet";
 import ThemeSelector,{type Theme} from "../app/theme-selector";
 import {StaticDialogueAudio,KALTSIT,staticAudioPath,isVoicedChapter} from "./audio";
 import {CATALOG,loadStory} from "./story-api";
@@ -12,6 +14,7 @@ type Step={id:string;type:string;text?:string;speaker?:string;route:string[]|nul
 type Chapter={id:string;title:string;code:string;tag:string};
 type Group={id:string;title:string;chapters:Chapter[]};
 type Voice={id:string;speaker:string;version:string;aliases?:string[];kind?:string};
+type DocumentPictureInPictureApi={requestWindow:(options:{width:number;height:number})=>Promise<Window>};
 const FIRST:Chapter={id:"activities/act55side/level_act55side_st01",title:"复生的奇迹",code:"TL-ST-1",tag:"幕间"};
 const BG=MEDIA_ROOT+"backgrounds/bg_cher_1.png";
 function IconButton({label,onClick,active=false,children}:any){return <button className={"icon-button "+(active?"active":"")} title={label} aria-label={label} onClick={onClick}>{children}</button>;}
@@ -24,6 +27,7 @@ export default function Theater(){
  const [listening,setListening]=useState(false);const listeningRef=useRef(false),moveRef=useRef<()=>void>(()=>{}),backRef=useRef<()=>void>(()=>{});
  const [auto,setAuto]=useState(false),[muted,setMuted]=useState(false),[musicVolume,setMusicVolume]=useState(.35),[volume,setVolume]=useState(.85),[rate,setRate]=useState(1);
  const [voiceStatus,setVoiceStatus]=useState("idle"),[voiceError,setVoiceError]=useState("");
+ const [petWindow,setPetWindow]=useState<Window|null>(null),petWindowRef=useRef<Window|null>(null);
  const [started,setStarted]=useState(false),[ended,setEnded]=useState(false),[full,setFull]=useState(false),[saved,setSaved]=useState<any>(null),[toast,setToast]=useState("");
  const [focusGroupId,setFocusGroupId]=useState(()=>new URLSearchParams(window.location.search).get("group"));
  const chapterEpoch=useRef(0);
@@ -84,7 +88,21 @@ export default function Theater(){
   for(const [action,handler] of Object.entries(handlers)){try{navigator.mediaSession.setActionHandler(action as MediaSessionAction,handler);}catch{}}
   return()=>{for(const action of Object.keys(handlers)){try{navigator.mediaSession.setActionHandler(action as MediaSessionAction,null);}catch{}}};
  },[step?.id,chapter,playCurrent]);
- const toggleListening=()=>{if(!isVoicedChapter(chapter.id))return;const enabled=!listening;setListening(enabled);listeningRef.current=enabled;setAuto(false);if(enabled){setStarted(true);setMuted(false);if(started)playCurrent();setToast("有声模式已开启：遇到分支或段落结束时等待确认");}};
+ useEffect(()=>{if(!listening){petWindowRef.current?.close();petWindowRef.current=null;setPetWindow(null);}},[listening]);
+ useEffect(()=>()=>{petWindowRef.current?.close();},[]);
+ const openPet=()=>{
+  const api=(window as Window & {documentPictureInPicture?:DocumentPictureInPictureApi}).documentPictureInPicture;
+  if(!api){setToast("当前浏览器不支持悬浮桌宠，随身听仍可使用");return;}
+  if(petWindowRef.current&&!petWindowRef.current.closed){petWindowRef.current.focus();return;}
+  void api.requestWindow({width:252,height:305}).then(pip=>{
+   if(!listeningRef.current){pip.close();return;}
+   pip.document.title="凯尔希 · 泰拉之声";
+   petWindowRef.current=pip;
+   pip.addEventListener("pagehide",()=>{if(petWindowRef.current===pip){petWindowRef.current=null;setPetWindow(null);}},{once:true});
+   setPetWindow(pip);
+  }).catch(()=>setToast("悬浮桌宠未能打开，随身听仍可使用"));
+ };
+ const toggleListening=()=>{if(!isVoicedChapter(chapter.id))return;const enabled=!listening;setListening(enabled);listeningRef.current=enabled;setAuto(false);if(enabled){setStarted(true);setMuted(false);if(started)playCurrent();setToast("有声模式已开启：遇到分支或段落结束时等待确认");openPet();}};
  const nextSection=nextChapter(catalog,chapter.id);
  const continueSection=async()=>{if(!nextSection)return;setDrawer(null);await loadChapter(nextSection);setStarted(true);};
  const fullScreen=async()=>{if(document.fullscreenElement)await document.exitFullscreen();else await stage.current?.requestFullscreen();setFull(!!document.fullscreenElement);};
@@ -100,7 +118,7 @@ export default function Theater(){
   <header className="topbar">
    <button className="brand" onClick={()=>openDrawer("chapters")}><span className="brand-mark"><Triangle size={23}/><span/></span><b>泰拉之声</b><span className="brand-en">VOICE OF TERRA</span></button>
    <div className="chapter-heading"><span>{catalog.find(g=>g.chapters.some(c=>c.id===chapter.id))?.title||"剧情档案"}</span><span className="divider"/><b>{chapter.code} · {chapter.title}</b><span className="tag">{chapter.tag}</span></div>
-   <div className="top-actions"><button className={"listen-toggle "+(listening?"active":"")} onClick={toggleListening} disabled={!isVoicedChapter(chapter.id)} title={isVoicedChapter(chapter.id)?"收听有声剧情":"本章仅支持阅读"}><Headphones size={16}/><span>{listening?"随身听中":"随身听"}</span></button><a className="icon-button" aria-label="GitHub 项目" href="https://github.com/luoul-123/voice-of-terra-for-arknights" target="_blank" rel="noreferrer"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.4 3.5 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.7 4.7 0 0 1 1.2 3.2c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg></a><IconButton label="章节目录" onClick={()=>openDrawer("chapters")}><BookOpen size={19}/></IconButton><IconButton label="阅读设置" onClick={()=>openDrawer("settings")}><Settings2 size={19}/></IconButton></div>
+   <div className="top-actions"><button className={"listen-toggle "+(listening?"active":"")} onClick={toggleListening} disabled={!isVoicedChapter(chapter.id)} title={isVoicedChapter(chapter.id)?"收听有声剧情":"本章仅支持阅读"}><Headphones size={16}/><span>{listening?"随身听中":"随身听"}</span></button>{listening&&"documentPictureInPicture" in window&&<IconButton label="打开凯尔希悬浮桌宠" onClick={openPet}><PictureInPicture2 size={18}/></IconButton>}<a className="icon-button" aria-label="GitHub 项目" href="https://github.com/luoul-123/voice-of-terra-for-arknights" target="_blank" rel="noreferrer"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.4 3.5 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.7 4.7 0 0 1 1.2 3.2c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg></a><IconButton label="章节目录" onClick={()=>openDrawer("chapters")}><BookOpen size={19}/></IconButton><IconButton label="阅读设置" onClick={()=>openDrawer("settings")}><Settings2 size={19}/></IconButton></div>
   </header>
   <aside className="scene-meta"><span className="tiny-cross">+</span><span>RHODES ISLAND</span><div/><span>STORY ARCHIVE / {chapter.code}</span></aside>
   {loading&&<div className="center-card loading"><LoaderCircle className="spin" size={27}/><h2>正在打开泰拉的故事</h2><p>加载章节与演出资源</p></div>}
@@ -135,5 +153,6 @@ export default function Theater(){
     <a className="developer-log-link" href="https://github.com/luoul-123/voice-of-terra-for-arknights/blob/main/web/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
   </aside></div>}
+  {petWindow&&createPortal(<DesktopPet chapter={chapter.code} line={step?.text||""} status={ended?"ended":step?.type==="choice"?"choice":muted?"silent":voiceStatus} rate={rate} onToggle={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()} onRateChange={setRate} onReturn={()=>{petWindow.close();window.focus();}}/>,petWindow.document.body)}
  </main>;
 }

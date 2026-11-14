@@ -1,1 +1,8 @@
 .listen-toggle:disabled{opacity:.42}
+
+.archive-title-line{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.timeline-row .archive-title-line b{display:inline;margin:4px 0}
+.story-archive .archive-voiced-badge{display:inline-flex;align-items:center;gap:5px;margin-left:9px;padding:4px 9px;border:1px solid #b4dcae;border-radius:5px;background:#dbefd2;color:#284a35;font-size:11px;font-weight:700;line-height:1.2;letter-spacing:.04em;vertical-align:middle;white-space:nowrap;box-shadow:0 0 0 2px #c6e3bd22}
+.story-archive .archive-voiced-badge svg{flex:none}
+.timeline-row .archive-voiced-badge{margin-left:0}
+.theater[data-theme="light"] .story-archive .archive-voiced-badge{background:#cce8c1;border-color:#9fce9b;color:#24503b}
