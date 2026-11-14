@@ -4,6 +4,6 @@
 
 音乐逻辑名来自 ArknightsAssets/ArknightsGamedata 的 cn/gamedata/story/story_variables.json。公开参考站点泰拉文库使用的历史音频资源版本 2c7efe3c96ff8eb96af777ff7508144b4485654a 仍包含当前 cn 分支已不提供的曲目；音乐优先读取这一固定版本，再尝试 cn。已实际验证 babel_loop 与 EyjafjallaDream_loop。
 
-媒体通过本机网络按需读取，缓存到 .voice-data/media；首次打开未缓存资源仍需联网。GitHub 与 jsDelivr 可回退；未知名称报错，不把用户输入拼成任意外部 URL。索引不会自动更新，新增角色/曲目需要维护索引。
+当前 Pages 网页在浏览器中按需读取公开素材，不经过维护者电脑；主站不复制立绘、CG 或音乐文件。剧情样例文本随主站发布，其他章节从 ArknightsGamedata 的公开地址读取，并在 jsDelivr 与 GitHub 原始文件之间回退。旧版 `.voice-data/media` 是本地网页缓存，不参与当前在线站点；未知素材名称仍会被校验，不能任意拼接外部 URL。索引不会自动更新，新增角色或曲目时需要维护索引。
 
 支持按脚本播放前奏和循环、停止、音乐音量变化、分支后恢复音乐状态。设置中音乐音量与配音音量独立保存。已支持表情差分、左右中槽位、明暗焦点与最终位置/缩放/透明度；复杂跳跃、震动等连续动作尚未完整复刻。

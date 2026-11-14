@@ -1,3 +1,5 @@
-# 泰拉之声 · 网页剧情剧场
+# Voice of Terra · 网页剧情剧场
 
-功能与安装见 [项目说明](../README.md)，服务配置与播放机制见 [运行说明](IMPLEMENTATION.md)，素材准备见 [音色说明](docs/default-voices.md)。
+读者直接打开 [主网页](https://luoul-123.github.io/voice-of-terra-for-arknights/)，无需本地安装。功能、双目录与许可见 [项目 README](../README.md)。
+
+本地维护者使用 [运行与发布说明](IMPLEMENTATION.md) 修改网页和上传凯尔希音频；[音色说明](docs/default-voices.md)、[剧情日期来源](docs/catalog-sources.md)、[媒体来源](docs/media-sources.md)记录数据与素材。旧版本地服务验证保留在 [历史记录](VALIDATION.md)。

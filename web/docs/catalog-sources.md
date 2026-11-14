@@ -2,6 +2,8 @@
 
 时间列表按国服首次实装日期排序，日期以 Asia/Shanghai 显示；同一活动内保留原剧情顺序。复刻日期不参与首次实装排序。数据缺失时标注“日期待补”，不拿档案收录日期冒充首发日期。
 
+当前主站的 `pages/catalog.json` 收录 491 个故事组、2,061 个章节。根目录 README 的“按剧情分类”和“按实装顺序”两份目录由 `scripts/generate-readme-index.mjs` 从这个快照生成；点击故事标题会以 `?group=故事组ID` 在主网页打开该故事的章节目录。新增或修订目录数据后，应重新运行脚本并一同提交 README。
+
 - 主线、SideStory、故事集：story_review_table.json 的 entryType / startTime。
 - 个人密录：handbook_info_table.json 的 handbookAvgList.storyGetTime；角色名称来自 character_table.json。
 - 主线 10 章以后优先使用 zone_table.json 的 mainlineAdditionInfo.zoneOpenTime；无对应字段时使用该主线的开放时间。

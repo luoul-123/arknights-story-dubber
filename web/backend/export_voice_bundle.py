@@ -1,4 +1,4 @@
-"""Build a small, portable Release asset with the five published voices."""
+"""Build a portable Release asset with the Kal'tsit production voice."""
 from __future__ import annotations
 
 import argparse
@@ -8,7 +8,7 @@ from pathlib import Path
 from zipfile import ZipFile, ZIP_STORED
 
 DATA = Path(__file__).resolve().parents[1] / ".voice-data"
-EXPECTED = {"阿米娅", "凯尔希", "佩丽卡", "男管理员", "女管理员"}
+EXPECTED = {"凯尔希"}
 MARKER = "/voice-of-terra/.voice-data/"
 
 
@@ -19,7 +19,7 @@ def main():
     store = json.loads((DATA / "characters.json").read_text("utf-8"))
     published = [c for c in store.values() if c.get("published") and c.get("speaker") in EXPECTED]
     if {c["speaker"] for c in published} != EXPECTED:
-        raise SystemExit("Five published preset voices are required.")
+        raise SystemExit("The published Kal'tsit voice is required.")
     exported = {}
     files = {}
     for character in published:

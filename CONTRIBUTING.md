@@ -1,19 +1,26 @@
 # 参与贡献
 
-较大的功能改动建议先通过 Issue 讨论；修复问题可直接提交 Pull Request。
+泰拉之声的公开入口是 [GitHub Pages 主网页](https://luoul-123.github.io/voice-of-terra-for-arknights/)。较大的功能改动建议先开 Issue；明确的问题可直接提交 Pull Request。
 
 ## 报告问题
 
-请写明系统、浏览器、Node.js 与 Python 版本，以及复现步骤、预期结果和实际结果。配音问题请注明所选预设音色、出错台词和是否正在连续跳句。
+请给出故事标题、章节、台词位置、浏览器与复现步骤。配音问题请附“有声”标记是否出现、是否开启随身听，以及对应的音频请求状态。立绘、CG、音乐和剧情文本由外部公开素材源提供，网络故障也请注明。
 
-## 开发与提交
+## 修改网页
 
-1. 按 [README](README.md) 安装网页版及后端依赖。
-2. 在自己的分支中修改；读者入口在网页内，音色素材与训练使用后端管理工具，不再添加读者上传、桌面 UI 或 OCR 依赖。
-3. 在 web 目录运行 node --test tests/core.test.mjs、..\.venv\Scripts\python.exe -m unittest discover -s backend -p "test_*.py"、npx tsc --noEmit 和 npm run build。
-4. 涉及播放流程时，启动本机服务后运行 node tests/browser-smoke.mjs；面板、目录或段落衔接改动同时运行 node tests/browser-navigation.mjs；音色选择改动运行 node tests/browser-preset-settings.mjs；连续跳句运行 node tests/browser-rapid-skip.mjs。这些检查顺序执行，使用 Windows Edge 并静音。
-5. 提交时说明改动、验证方式及尚未验证的范围。
+网页代码在 `web/pages/`，共用剧情逻辑在 `web/lib/`，样式在 `web/app/globals.css`。README 双目录由 `web/scripts/generate-readme-index.mjs` 生成。提交前在 `web` 目录执行：
 
-不要提交 .venv/、engines/、models/、voice_profiles/、web/.voice-data/、web/work/、web/.dev.vars、环境密钥、录音或训练模型。日志和截图上传前应检查个人信息及本机路径。第三方剧情和素材不作为模型或代码附件分发。
+~~~powershell
+npm ci
+node scripts/verify-pages.mjs
+npx tsc --noEmit
+npm run build:pages
+~~~
 
-原创代码采用 MIT 许可证；第三方素材保留各自权利。提交贡献即表示你有权提交相应内容，并同意原创代码按 MIT 许可证分发。
+目录数据变化时，另运行 `node scripts/generate-readme-index.mjs` 并提交更新后的 README。当前在线站点只播放预生成的凯尔希配音；网页改动不应要求读者运行 Python、GPU 服务或本地 `.bat`。
+
+## 音频发布
+
+新音频先进入独立的 [音频分站](https://github.com/luoul-123/vot-audio-20261101)，确认公开 MP3 可访问后，再更新主站的 `web/pages/audio-manifest.json` 与 `web/pages/audio-sites.json`。详细流程见 [运行与发布](web/IMPLEMENTATION.md)。不要将模型、训练样本、生成缓存、令牌或 `web/work/` 提交到主仓库。
+
+原创代码按 [MIT 许可证](LICENSE)分发；剧情、音乐、立绘、CG 和角色录音属于相应权利人。提交贡献前请确认自己有权提供相应内容。

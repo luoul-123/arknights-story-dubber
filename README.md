@@ -4,7 +4,7 @@
 
 Voice of Terra 是在浏览器中阅读和收听《明日方舟》剧情的非官方同人项目。博士，故事已经在这里铺开了：[打开泰拉之声](https://luoul-123.github.io/voice-of-terra-for-arknights/)即可阅读全部收录剧情。
 
-凯尔希正在为 SideStory **《时间啊，向前！》** 讲述往事。已上线的段落会标出“凯尔希有声”，其余剧情也能阅读、看立绘与 CG、听背景音乐。后续只使用凯尔希音色，逐步补充有声章节。
+凯尔希正在为 SideStory **《时间啊，向前！》** 讲述往事。已上线的段落会标出“有声”，其余剧情也能阅读、看立绘与 CG、听背景音乐。后续只使用凯尔希音色，逐步补充有声章节。
 
 | 功能 | 说明 |
 | --- | --- |
@@ -16,7 +16,7 @@ Voice of Terra 是在浏览器中阅读和收听《明日方舟》剧情的非�
 
 ## 用户安装教程
 
-在线阅读**无需安装**，直接打开 [Voice of Terra 网页](https://luoul-123.github.io/voice-of-terra-for-arknights/)。点右上角的目录选择故事；有“凯尔希有声”标记的章节可以收听，其他章节可以阅读。设置里可以切换黑白主题。存档只保存在当前浏览器；换设备或清除网站数据后不会自动同步。
+在线阅读**无需安装**，直接打开 [Voice of Terra 网页](https://luoul-123.github.io/voice-of-terra-for-arknights/)。点右上角的目录选择故事；有“有声”标记的章节可以收听，其他章节可以阅读。设置里可以切换黑白主题。存档只保存在当前浏览器；换设备或清除网站数据后不会自动同步。
 
 开发者可以从 [GitHub 下载源码 ZIP](https://github.com/luoul-123/voice-of-terra-for-arknights/archive/refs/heads/main.zip)。本地保留的语音模型和生成工具用于制作新音频，不是读者使用网页的前置条件。
 

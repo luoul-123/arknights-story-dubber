@@ -1,9 +1,9 @@
 "use client";
 import {useCallback,useEffect,useRef,useState} from "react";
-import {BookOpen,Settings2,Volume2,VolumeX,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Mic2,Check,RefreshCw,LoaderCircle,SkipForward,Triangle,Save} from "lucide-react";
+import {BookOpen,Settings2,Volume2,VolumeX,Play,Pause,History,ChevronLeft,ChevronRight,X,Maximize,Minimize,Headphones,Check,RefreshCw,LoaderCircle,SkipForward,Triangle,Save} from "lucide-react";
 import StoryArchive from "./story-archive";
 import StoryMusic from "./story-music";
-import ReadingVoiceSettings from "./reading-voice-settings";
+
 import ThemeSelector,{type Theme} from "./theme-selector";
 import {DialogueAudio,resolveVoice} from "../lib/audio.mjs";
 import {nextIndex,nextChapter,previousStep,resolveScene,MEDIA_ROOT} from "../lib/story.mjs";
@@ -22,7 +22,7 @@ export default function Theater(){
  const [catalog,setCatalog]=useState<Group[]>([]),[loading,setLoading]=useState(true),[error,setError]=useState(""),[drawer,setDrawer]=useState<string|null>(null);
  const [history,setHistory]=useState<{index:number;step:Step;choice:string|null}[]>([]),[typing,setTyping]=useState(true),[shown,setShown]=useState(0),[theme,setTheme]=useState<Theme>("dark");
  const [readerVoice,setReaderVoice]=useState<Voice|null>(null);
- const selectReaderVoice=(voice:Voice|null)=>{setReaderVoice(voice);localStorage.setItem("terra-preset-voice",voice?.id||"");};
+
  const [listening,setListening]=useState(false);const listeningRef=useRef(false),moveRef=useRef<()=>void>(()=>{}),backRef=useRef<()=>void>(()=>{});
  const [auto,setAuto]=useState(false),[muted,setMuted]=useState(false),[musicVolume,setMusicVolume]=useState(.35),[volume,setVolume]=useState(.85),[rate,setRate]=useState(1);
  const [voices,setVoices]=useState<Voice[]>([]),[voiceStatus,setVoiceStatus]=useState("idle"),[voiceError,setVoiceError]=useState("");
@@ -34,7 +34,7 @@ export default function Theater(){
  useEffect(()=>{
   try{const s=JSON.parse(localStorage.getItem("terra-manual-save")||localStorage.getItem("zhousheng-progress")||"null");if(s)setSaved(s);const settings=JSON.parse(localStorage.getItem("zhousheng-settings")||"null");if(settings){setTyping(settings.typing??true);setVolume(settings.volume??.85);setMusicVolume(settings.musicVolume??.35);setTheme(settings.theme==="light"?"light":"dark");}}catch{}
   fetch("/api/stories?catalog=2").then(r=>{if(!r.ok)throw Error();return r.json() as Promise<Group[]>;}).then(setCatalog).catch(()=>{});
-  api("voices").then(j=>{setVoices(j.voices||[]);const chosen=j.voices?.find((v:Voice)=>v.id===localStorage.getItem("terra-preset-voice"))||j.voices?.find((v:Voice)=>v.speaker==="阿米娅");if(chosen)setReaderVoice(chosen);}).catch(e=>setVoiceError(e.message));
+  api("voices").then(j=>{setVoices(j.voices||[]);const chosen=j.voices?.find((v:Voice)=>v.speaker==="凯尔希");if(chosen)setReaderVoice(chosen);}).catch(e=>setVoiceError(e.message));
  },[]);
  useEffect(()=>{localStorage.setItem("zhousheng-settings",JSON.stringify({typing,volume,musicVolume,theme}));},[typing,volume,musicVolume,theme]);
  const loadChapter=useCallback(async(c:Chapter,resume?:any)=>{
@@ -102,7 +102,7 @@ export default function Theater(){
   <header className="topbar">
    <button className="brand" onClick={()=>openDrawer("chapters")}><span className="brand-mark"><Triangle size={23}/><span/></span><b>泰拉之声</b><span className="brand-en">VOICE OF TERRA</span></button>
    <div className="chapter-heading"><span>{catalog.find(g=>g.chapters.some(c=>c.id===chapter.id))?.title||"剧情档案"}</span><span className="divider"/><b>{chapter.code} · {chapter.title}</b><span className="tag">{chapter.tag}</span></div>
-   <div className="top-actions"><button className={"listen-toggle "+(listening?"active":"")} onClick={toggleListening}><Headphones size={16}/><span>{listening?"随身听中":"随身听"}</span></button><a className="icon-button" aria-label="GitHub 项目" href="https://github.com/luoul-123/voice-of-terra-for-arknights" target="_blank" rel="noreferrer"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.4 3.5 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.7 4.7 0 0 1 1.2 3.2c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg></a><IconButton label="章节目录" onClick={()=>openDrawer("chapters")}><BookOpen size={19}/></IconButton><IconButton label="朗读音色设置" onClick={()=>openDrawer("studio")}><Mic2 size={19}/></IconButton><IconButton label="阅读设置" onClick={()=>openDrawer("settings")}><Settings2 size={19}/></IconButton></div>
+   <div className="top-actions"><button className={"listen-toggle "+(listening?"active":"")} onClick={toggleListening}><Headphones size={16}/><span>{listening?"随身听中":"随身听"}</span></button><a className="icon-button" aria-label="GitHub 项目" href="https://github.com/luoul-123/voice-of-terra-for-arknights" target="_blank" rel="noreferrer"><svg width="19" height="19" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 .5a12 12 0 0 0-3.8 23.4c.6.1.8-.3.8-.6v-2.1c-3.3.7-4-1.4-4-1.4-.5-1.4-1.3-1.8-1.3-1.8-1.1-.8.1-.8.1-.8 1.2.1 1.8 1.2 1.8 1.2 1.1 1.9 2.8 1.4 3.5 1.1.1-.8.4-1.4.8-1.7-2.7-.3-5.5-1.4-5.5-6a4.7 4.7 0 0 1 1.2-3.2c-.1-.3-.5-1.6.1-3.3 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0c2.3-1.5 3.3-1.2 3.3-1.2.6 1.7.2 3 .1 3.3a4.7 4.7 0 0 1 1.2 3.2c0 4.6-2.8 5.7-5.5 6 .4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6A12 12 0 0 0 12 .5Z"/></svg></a><IconButton label="章节目录" onClick={()=>openDrawer("chapters")}><BookOpen size={19}/></IconButton><IconButton label="阅读设置" onClick={()=>openDrawer("settings")}><Settings2 size={19}/></IconButton></div>
   </header>
   <aside className="scene-meta"><span className="tiny-cross">+</span><span>RHODES ISLAND</span><div/><span>STORY ARCHIVE / {chapter.code}</span></aside>
   {loading&&<div className="center-card loading"><LoaderCircle className="spin" size={27}/><h2>正在打开泰拉的故事</h2><p>加载章节与演出资源</p></div>}
@@ -123,8 +123,8 @@ export default function Theater(){
   <div className="progress-track"><div style={{width:steps.length?((index+1)/steps.length*100)+"%":"0"}}/></div>
   {listening&&started&&<div className="listen-badge"><Headphones size={13}/>{ended?"本节播放完毕":step?.type==="choice"?"等待你的选择":voiceStatus==="error"?"播放遇到问题，请重试":voiceStatus==="paused"?"已暂停":voiceStatus==="loading"?"正在准备下一句":"随身听 · 可切换到后台"}</div>}
   {toast&&<div className="toast"><Check size={16}/>{toast}</div>}
-  {drawer&&<div className="drawer-backdrop" onClick={()=>setDrawer(null)}><aside className={"drawer "+(drawer==="studio"?"studio-drawer":"")} onClick={e=>e.stopPropagation()}>
-   <div className="drawer-head"><div><span className="eyebrow">{drawer==="studio"?"READING VOICE":drawer==="chapters"?"STORY ARCHIVE":drawer==="history"?"BACKLOG":"PREFERENCES"}</span><h2>{{chapters:"剧情档案",studio:"朗读音色设置",history:"对话回顾",settings:"阅读设置"}[drawer]}</h2></div><IconButton label="关闭面板" onClick={()=>setDrawer(null)}><X size={21}/></IconButton></div>
+  {drawer&&<div className="drawer-backdrop" onClick={()=>setDrawer(null)}><aside className="drawer" onClick={e=>e.stopPropagation()}>
+   <div className="drawer-head"><div><span className="eyebrow">{drawer==="chapters"?"STORY ARCHIVE":drawer==="history"?"BACKLOG":"PREFERENCES"}</span><h2>{{chapters:"剧情档案",history:"对话回顾",settings:"阅读设置"}[drawer]}</h2></div><IconButton label="关闭面板" onClick={()=>setDrawer(null)}><X size={21}/></IconButton></div>
    {listening&&started&&<div className="drawer-player"><Headphones size={17}/><div><b>{ended?"本段播放完毕":step?.type==="choice"?"等待剧情选择":voiceStatus==="paused"?"收听已暂停":"正在收听"} · {chapter.code}</b><span>{step?.speaker||"旁白"} · {text.slice(0,32)}</span></div><button aria-label={voiceStatus==="paused"?"继续随身听":"暂停随身听"} onClick={()=>voiceStatus==="paused"?player.current?.resume():player.current?.pause()}>{voiceStatus==="paused"?<Play size={16}/>:<Pause size={16}/>}</button>{ended&&nextSection&&<button aria-label="确认进入下一段" onClick={continueSection}><ChevronRight size={17}/></button>}<button aria-label="随身听下一句" onClick={()=>move()}><SkipForward size={17}/></button></div>}
    {drawer==="chapters"&&<StoryArchive groups={catalog} currentId={chapter.id} onSelect={(c:Chapter)=>{setDrawer(null);loadChapter(c);}} onRetry={()=>fetch("/api/stories?catalog=2").then(r=>r.json()).then(j=>Array.isArray(j)&&setCatalog(j))}/>}
    {drawer==="history"&&<div className="backlog">{!history.length?<p className="muted">读过的台词会出现在这里。</p>:history.map((h,i)=><button key={i} onClick={()=>{setIndex(h.index);setChoice(h.choice);setHistory(old=>old.slice(0,i));setEnded(false);setDrawer(null);}}><span>{String(h.index+1).padStart(3,"0")}</span><div><b>{h.step.speaker||"博士的选择"}</b><p>{h.step.text||"选择对话分支"}</p></div><ChevronRight size={15}/></button>)}</div>}
@@ -136,7 +136,6 @@ export default function Theater(){
     <label className="slider-setting"><span>播放速度 <b>{rate.toFixed(1)}×</b></span><input type="range" min=".7" max="1.5" step=".1" aria-label="播放速度" value={rate} onChange={e=>setRate(+e.target.value)}/></label>
     <a className="developer-log-link" href="https://github.com/luoul-123/voice-of-terra-for-arknights/blob/main/web/docs/developer-log.md" target="_blank" rel="noopener noreferrer">开发者日志 <span aria-hidden="true">↗</span></a>
    </div>}
-   {drawer==="studio"&&<><ReadingVoiceSettings voices={voices} selected={readerVoice} onSelect={selectReaderVoice}/></>}
   </aside></div>}
  </main>;
 }

@@ -26,7 +26,7 @@ export class StaticDialogueAudio extends DialogueAudio{
     const cached=this.cache.get(key);
     if(cached)return cached;
     const url=staticAudioPath(line.id);
-    if(!url||voice?.id!==KALTSIT.id)throw Error("这一句暂无凯尔希配音");
+    if(!url||voice?.id!==KALTSIT.id)throw Error("这一句暂无配音");
     const response=await fetch(url,{signal});
     if(!response.ok)throw Error("音频暂时无法加载");
     const objectUrl=URL.createObjectURL(await response.blob());

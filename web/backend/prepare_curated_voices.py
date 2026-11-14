@@ -1,4 +1,4 @@
-"""Download the five network voice datasets, or train/publish imported profiles."""
+"""Download or prepare the Kal'tsit production voice dataset."""
 import argparse, hashlib, json, os, subprocess, time
 from pathlib import Path
 from urllib.parse import urldefrag
@@ -8,7 +8,7 @@ import imageio_ffmpeg
 BASE = Path(__file__).resolve().parent
 WEB = BASE.parent
 SOURCES = BASE / 'curated-voice-sources.json'
-NAMES = ['阿米娅', '凯尔希', '佩丽卡', '男管理员', '女管理员']
+NAMES = ['凯尔希']
 
 
 def prepare():
@@ -57,7 +57,7 @@ def call(endpoint, data=None):
 def profiles():
     found = {c['speaker']: c for c in call('admin/characters')['characters'] if c['speaker'] in NAMES}
     if set(found) != set(NAMES):
-        raise ValueError('请先准备并导入五个角色的网络素材')
+        raise ValueError('请先准备并导入凯尔希的网络素材')
     return [found[name] for name in NAMES]
 
 
@@ -83,12 +83,12 @@ def train(epochs):
 def publish():
     people = profiles()
     if not all(c['models'] for c in people):
-        raise ValueError('五个角色必须全部完成训练后再发布')
+        raise ValueError('凯尔希模型尚未完成训练')
     for person in people:
         call('admin/publish', {'id': person['id'], 'mode': 'trained'})
         print(person['speaker'] + ' 已发布', flush=True)
     ids = {c['speaker']: c['id'] for c in people}
-    call('admin/defaults', {'female': ids['佩丽卡'], 'male': ids['男管理员'], 'narrator': ids['佩丽卡']})
+    call('admin/defaults', {'female': ids['凯尔希'], 'male': ids['凯尔希'], 'narrator': ids['凯尔希']})
 
 
 if __name__ == '__main__':

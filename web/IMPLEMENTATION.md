@@ -1,47 +1,32 @@
-# 泰拉之声运行说明
+# Voice of Terra · 运行与发布
 
-## 本机运行
+## 在线结构
 
-根目录「启动网页版.bat」启动网站 5173 与语音服务 9881。GPT-SoVITS 推理服务使用 9882，按需启动。停止脚本只关闭记录中进程 ID 与启动时间一致的服务。
+读者只使用 [Voice of Terra 主网页](https://luoul-123.github.io/voice-of-terra-for-arknights/)。主仓库的 GitHub Pages 发布 React/Vite 静态网页、剧情目录和音频索引，不运行语音后端。剧情文本按需从 ArknightsGamedata 读取；立绘、CG 与音乐按需从公开素材源读取。
 
-手动启动：在 web 目录运行 npm run dev 和 ../.venv/Scripts/python.exe backend/run_local.py。.dev.vars 包含 VOICE_BACKEND_URL、VOICE_BACKEND_TOKEN、STUDIO_ADMIN_USER_ID；密钥只在服务端读取。
+凯尔希台词先在维护者电脑上用 GPT-SoVITS 合成，再转为 MP3。音频存放在独立的 [vot-audio-20261101](https://github.com/luoul-123/vot-audio-20261101) Pages 分站。`pages/audio-manifest.json` 记录哪些台词已有配音，`pages/audio-sites.json` 把章节路径映射到音频分站。播放器读取映射后直接加载 MP3，浏览器地址仍停留在主站。以后增加分站时，在映射中配置章节或路径前缀即可；每个 Pages 站点不得超过 [1 GB](https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits)。
 
-## 朗读音色
+## 剧情目录与存档
 
-网站仅提供阿米娅、凯尔希、佩丽卡、男管理员、女管理员五个选项，全部台词和旁白统一使用所选声音。浏览器键 terra-preset-voice 保存音色 ID，旧 ID 失效时回退到阿米娅。没有读者上传入口，网站代理也不开放 reader/upload 与 reader/voice。
+当前目录收录 491 个故事组、2,061 个章节。网页内可按剧情分类和国服首次实装时间浏览；README 的两份目录由 `scripts/generate-readme-index.mjs` 从 `pages/catalog.json` 生成。`?group=故事组ID` 可直达对应章节目录，选择章节后继续留在主站。
 
-音色由管理员通过后端工具准备；素材来源、样本时长和操作见 [default-voices.md](docs/default-voices.md)。五个角色使用网络游戏语音重新训练，旧个人录音、旧角色模型与旧合成缓存已删除。共享基础模型仍是训练和推理所需依赖。
+阅读设置、自动进度和手动存档保存在浏览器 `localStorage`。同一个 `luoul-123.github.io` 主网址的每次更新会继续使用原存档；换设备、换浏览器或清除网站数据不会自动同步。音频分站不保存用户状态。
 
-## 播放与排队
+## 本地开发
 
-同一 HTMLAudioElement 播放全部剧情。音频 ended 驱动随身听推进，打开面板不中断；音量与语速更新现有音频。分支与段落结束等待用户确认。已验证桌面 Edge 后台标签，手机锁屏尚未实机验证。
+本机只负责修改网页、维护目录、生成并发布凯尔希音频。无需启动旧版 `.bat` 网页或对外提供 GPU 服务。保留 `web/pages/`、`web/lib/`、`web/scripts/`、`web/backend/`，以及本地 GPT-SoVITS 引擎、基础模型与凯尔希音色。`web/app/globals.css` 和 `web/app/theme-selector.tsx` 仍供 Pages 界面使用；其余 `web/app/` 属早期本地网页代码。
 
-连续跳句等候 220 ms 稳定后才发送当前台词，实际开始播放后才延迟预取下一句。每个播放器使用独立 streamId 和递增 sequence；后端在获得 GPU 锁后检查是否已过时，旧排队任务不再合成。已经进入 GPU 的推理完成后结果会被前端忽略，不会播放旧句。
-
-浏览器最多缓存 24 条音频。训练与推理共用 GPU 锁；训练时停止本服务启动的推理进程释放显存。服务重启会终止未完成任务，保存的素材与模型保留。模型发布带版本号，重新发布不会命中旧音频缓存。
-
-## 剧情与存档
-
-剧情目录按需读取，提供分类、搜索及国服实装时间线。时间线按章节 / 活动合集折叠，展开后选具体段落。当前目录 491 组 / 2,061 段。见 [目录来源](docs/catalog-sources.md)。
-
-手动存档 terra-manual-save 与自动进度 zhousheng-progress 独立保存，刷新优先手动；启动页不写自动进度。选择其他章节不会覆盖手动存档。
-
-立绘保留表情 / 姿态标识，支持左右中人物槽位。音乐按脚本执行前奏、循环、停止，音乐与配音分别调节。复杂连续动画仍未完整复刻。见 [媒体来源](docs/media-sources.md)。
-
-## 部署
-
-网站与 GPU 后端分开运行。网站设置 VOICE_BACKEND_URL（GPU 服务 HTTPS 地址）、VOICE_BACKEND_TOKEN、STUDIO_ADMIN_USER_ID。GPU 服务设置相同密钥，以及 GPT_SOVITS_ROOT、GPT_SOVITS_PYTHON、WHISPER_MODEL_DIR 和持久化 ZHOU_DATA_DIR。
-
-默认只监听 127.0.0.1。公开部署需真实身份认证与 HTTPS 反向代理，服务密钥不可发给浏览器。Windows 已验证，Linux 尚未实机验证；无预设时的系统声音回退依赖 Windows。迁移语音服务需同时迁移模型、素材及 .voice-data，并修正其中本机绝对路径。
-
-## 验证
+网页改动在 `web` 目录检查：
 
 ~~~powershell
-node --test tests/core.test.mjs
-../.venv/Scripts/python.exe -m unittest discover -s backend -p "test_*.py"
+npm ci
+node scripts/verify-pages.mjs
 npx tsc --noEmit
-npm run build
-node tests/browser-preset-settings.mjs
+npm run build:pages
 ~~~
 
-其他回归脚本见根 README。work/、.voice-data/、录音、模型、.dev.vars 均不提交 Git。
+主站由 `.github/workflows/pages.yml` 在推送 `main` 后构建。音频分站从其仓库 `main` 分支发布静态文件。发布顺序是：**先推送音频分站并确认 MP3 可访问，再更新主站音频清单**，避免网页指向尚未上线的声音。
+
+当前《时间啊，向前！》的逐段发布脚本是 `scripts/publish-audio-sections.py`。它读取 `work/pages-lines.json`，从 `work/vot-audio-20261101/` 的独立 Git 检出中续传。`scripts/generate-pages-audio.py` 跳过已经生成的 MP3。首次在新电脑维护时，要先恢复凯尔希模型、准备 GPT-SoVITS 环境、检出音频仓库，并生成对应台词清单；读者无需这些文件。
+
+凯尔希模型的备份在主仓库 [Releases](https://github.com/luoul-123/voice-of-terra-for-arknights/releases/latest) 的 `voice-of-terra-kaltsit.zip`。模型、生成缓存、令牌和工作目录均不提交到主仓库。音色来源见 [凯尔希音色说明](docs/default-voices.md)，素材来源见 [媒体说明](docs/media-sources.md)。
