@@ -8,7 +8,7 @@
 
 ## 修改网页
 
-网页代码在 `web/pages/`，共用剧情逻辑在 `web/lib/`，样式在 `web/app/globals.css`。README 双目录由 `web/scripts/generate-readme-index.mjs` 生成。提交前在 `web` 目录执行：
+网页代码在 `web/pages/`，共用剧情逻辑在 `web/lib/`，样式在 `web/app/globals.css`。剧情目录由网页展示，README 用于记录整部故事的有声上线情况。提交前在 `web` 目录执行：
 
 ~~~powershell
 npm ci
@@ -17,7 +17,7 @@ npx tsc --noEmit
 npm run build:pages
 ~~~
 
-目录数据变化时，另运行 `node scripts/generate-readme-index.mjs` 并提交更新后的 README。当前在线站点只播放预生成的凯尔希配音；网页改动不应要求读者运行 Python、GPU 服务或本地 `.bat`。
+目录数据变化时，检查网页内的分类和实装时间顺序。整部故事的有声内容上线后，再更新 README 的日志。当前在线站点只播放预生成的凯尔希配音；网页改动不应要求读者运行 Python、GPU 服务或本地 `.bat`。
 
 ## 音频发布
 
