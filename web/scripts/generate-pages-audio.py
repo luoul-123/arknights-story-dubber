@@ -79,6 +79,14 @@ def main():
                 manifest[section.name] = sorted(int(file.stem) for file in section.glob('*.mp3') if file.stem.isdigit() and file.stat().st_size > 1000)
         manifest_path.write_text(json.dumps(manifest, separators=(',', ':')), encoding='utf-8')
         server.stop_engine()
+        cache_dir = ROOT / '.voice-data/audio'
+        cleared = 0
+        if cache_dir.is_dir():
+            for cached in cache_dir.glob('*.wav'):
+                if cached.parent == cache_dir and not cached.is_symlink():
+                    cached.unlink(missing_ok=True)
+                    cleared += 1
+        print(f'Cleared {cleared} generated WAV cache files', flush=True)
         print(f'Manifest: {sum(map(len, manifest.values()))} files', flush=True)
     if failed:
         raise RuntimeError(f'{len(failed)} lines failed: ' + ', '.join(failed[:10]))

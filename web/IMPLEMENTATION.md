@@ -27,6 +27,6 @@ npm run build:pages
 
 主站由 `.github/workflows/pages.yml` 在推送 `main` 后构建。音频分站从其仓库 `main` 分支发布静态文件。发布顺序是：**先推送音频分站并确认 MP3 可访问，再更新主站音频清单**，避免网页指向尚未上线的声音。
 
-当前《时间啊，向前！》的逐段发布脚本是 `scripts/publish-audio-sections.py`。它读取 `work/pages-lines.json`，从 `work/vot-audio-20261101/` 的独立 Git 检出中续传。`scripts/generate-pages-audio.py` 跳过已经生成的 MP3。首次在新电脑维护时，要先恢复凯尔希模型、准备 GPT-SoVITS 环境、检出音频仓库，并生成对应台词清单；读者无需这些文件。
+当前《时间啊，向前！》的逐段发布脚本是 `scripts/publish-audio-sections.py`。它读取 `work/pages-lines.json`，从 `work/vot-audio-20261101/` 的独立 Git 检出中续传。`scripts/generate-pages-audio.py` 跳过已经生成的 MP3，并在完成一节后清理临时 WAV 缓存。首次在新电脑维护时，要先恢复凯尔希模型、准备 GPT-SoVITS 环境、检出音频仓库，并生成对应台词清单；读者无需这些文件。
 
 凯尔希模型的备份在主仓库 [Releases](https://github.com/luoul-123/voice-of-terra-for-arknights/releases/latest) 的 `voice-of-terra-kaltsit.zip`。模型、生成缓存、令牌和工作目录均不提交到主仓库。音色来源见 [凯尔希音色说明](docs/default-voices.md)，素材来源见 [媒体说明](docs/media-sources.md)。
