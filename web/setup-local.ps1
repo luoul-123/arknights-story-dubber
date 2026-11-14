@@ -5,7 +5,7 @@ $projectRoot = Split-Path -Parent $webRoot
 $pythonPath = Join-Path $projectRoot '.venv\Scripts\python.exe'
 $dataRoot = Join-Path $webRoot '.voice-data'
 $voiceArchive = Join-Path $webRoot 'work\voice-of-terra-voices.zip'
-$voiceUrl = 'https://github.com/luoul-123/arknights-story-dubber/releases/latest/download/voice-of-terra-voices.zip'
+$voiceUrl = 'https://github.com/luoul-123/voice-of-terra-for-arknights/releases/latest/download/voice-of-terra-voices.zip'
 
 if (-not (Get-Command node -ErrorAction SilentlyContinue)) { throw '请先安装 Node.js 22.13 或更新版本：https://nodejs.org/' }
 if (-not (Get-Command npm -ErrorAction SilentlyContinue)) { throw '找不到 npm，请重新安装 Node.js。' }

@@ -29,11 +29,11 @@ try{
  await evaluate('document.querySelector("button[aria-label=静音]").click();document.querySelector(".entry-actions .primary").click()');
  await until('Boolean(document.querySelector(".line-number"))');
  assert.ok(await evaluate('!document.body.textContent.includes("EPISODE 00")&&!document.body.textContent.includes("非官方同人剧场")&&!document.querySelector(".voice-indicator")&&!document.querySelector(".voice-label")&&!document.body.textContent.includes("点击继续")'));
- assert.equal(await evaluate('document.querySelector("a[aria-label^=GitHub]").href'),'https://github.com/luoul-123/arknights-story-dubber');
+ assert.equal(await evaluate('document.querySelector("a[aria-label^=GitHub]").href'),'https://github.com/luoul-123/voice-of-terra-for-arknights');
  const heading=await evaluate('document.querySelector(".chapter-heading").textContent');assert.ok(heading.includes('黑暗时代'));console.log('COLLECTION_HEADER',heading);
  await evaluate('document.querySelector("button[aria-label=阅读设置]").click()');
  await until('Boolean(document.querySelector(".developer-log-link"))');
- assert.equal(await evaluate('document.querySelector(".developer-log-link").href'),'https://github.com/luoul-123/arknights-story-dubber/blob/main/web/docs/developer-log.md');
+ assert.equal(await evaluate('document.querySelector(".developer-log-link").href'),'https://github.com/luoul-123/voice-of-terra-for-arknights/blob/main/web/docs/developer-log.md');
  assert.equal(await evaluate('document.querySelector(".developer-log-link").target'),'_blank');
  assert.ok(await evaluate('!document.querySelector(".settings").textContent.includes("新增阿米娅音色语音包")'));
  assert.ok(await evaluate('!document.querySelector(".drawer").textContent.includes("键盘操作")&&!document.querySelector(".drawer").textContent.includes("角色语音服务已配置")'));await screenshot('preset-reading-settings');

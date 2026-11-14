@@ -17,7 +17,7 @@ Voice of Terra 是在浏览器中阅读和收听《明日方舟》剧情的非�
 
 目前提供 **Windows 本地运行版**。电脑需要 Windows 10/11、NVIDIA GPU 及驱动、[Node.js 22.13 或更新版本](https://nodejs.org/)、[Python 3.11](https://www.python.org/downloads/) 和约 20 GB 可用磁盘空间。首次安装需要联网下载依赖、语音引擎和五套音色，可能需要较长时间。
 
-1. [下载最新项目源码 ZIP](https://github.com/luoul-123/arknights-story-dubber/archive/refs/heads/main.zip) 并解压到本地文件夹。五套音色发布在 [GitHub Releases](https://github.com/luoul-123/arknights-story-dubber/releases/latest) 的 voice-of-terra-voices.zip 附件中；安装器会自动下载，无需手动解压。
+1. [下载最新项目源码 ZIP](https://github.com/luoul-123/voice-of-terra-for-arknights/archive/refs/heads/main.zip) 并解压到本地文件夹。五套音色发布在 [GitHub Releases](https://github.com/luoul-123/voice-of-terra-for-arknights/releases/latest) 的 voice-of-terra-voices.zip 附件中；安装器会自动下载，无需手动解压。
 2. 双击解压后文件夹中的 **安装并启动.bat**。安装器会准备运行环境、下载音色，并在完成后打开浏览器。
 3. 以后双击 **启动网页版.bat** 即可使用；结束时双击 **停止网页版.bat**。本机访问地址为 http://127.0.0.1:5173/。
 
